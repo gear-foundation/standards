@@ -1,0 +1,13 @@
+[package]
+name = "erc20-wasm"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+erc20 = { path = "../app" }
+
+[build-dependencies]
+gwasm-builder.workspace = true
+sails-idl-gen.workspace = true
+erc20 = { path = "../app" }
