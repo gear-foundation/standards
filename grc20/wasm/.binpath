@@ -1,1 +1,1 @@
-../target/wasm32-unknown-unknown/release/erc20_wasm
+../target/wasm32-unknown-unknown/debug/erc20_wasm

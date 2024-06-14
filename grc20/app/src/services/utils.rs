@@ -1,6 +1,5 @@
 use core::fmt::Debug;
-use gstd::{exec, ext, format, Encode};
-use scale_info::StaticTypeInfo;
+use gstd::{ext, format};
 
 pub fn panicking<T, E: Debug, F: FnOnce() -> Result<T, E>>(f: F) -> T {
     match f() {
@@ -21,8 +20,6 @@ macro_rules! declare_storage {
 
     (module: $module: ident, name: $name: ident, ty: $ty: ty $(,)?) => {
         pub struct $name(());
-
-        pub use $module::*;
 
         mod $module {
             use super::*;
@@ -68,4 +65,3 @@ macro_rules! declare_storage {
         }
     };
 }
-

@@ -1,10 +1,8 @@
 #![no_std]
 #![allow(clippy::new_without_default)]
-#![allow(dead_code)]
-#![allow(unused)]
 
-use gstd::{msg, ActorId, String};
-use sails_rtl::gstd::{gprogram, groute};
+use gstd::String;
+use sails_rtl::gstd::gprogram;
 use services::erc20;
 
 pub mod services;
@@ -14,7 +12,7 @@ pub struct Program(());
 #[gprogram]
 impl Program {
     pub fn new(name: String, symbol: String, decimals: u8) -> Self {
-        let erc20_service = <erc20::GstdDrivenService>::seed(name, symbol, decimals);
+        <erc20::GstdDrivenService>::seed(name, symbol, decimals);
         Self(())
     }
 

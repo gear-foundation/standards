@@ -1,8 +1,8 @@
 #![allow(clippy::unused_unit)]
 
 use crate::services;
-use core::{cmp::Ordering, fmt::Debug, marker::PhantomData};
-use gstd::{ext, format, msg, ActorId, Decode, Encode, String, TypeInfo, Vec};
+use core::fmt::Debug;
+use gstd::{format, msg, Decode, Encode, String, TypeInfo, Vec};
 use primitive_types::U256;
 use sails_rtl::gstd::gservice;
 use storage::{AllowancesStorage, BalancesStorage, MetaStorage, TotalSupplyStorage};
@@ -72,11 +72,11 @@ impl Service {
         let mutated = funcs::approve(AllowancesStorage::as_mut(), owner, spender.into(), value);
 
         if mutated {
-            self.notify_on(Event::Approval {
-                    owner: owner.into(),
-                    spender,
-                    value,
-                });
+            let _ = self.notify_on(Event::Approval {
+                owner: owner.into(),
+                spender,
+                value,
+            });
         }
 
         mutated
@@ -90,12 +90,11 @@ impl Service {
         });
 
         if mutated {
-            self.notify_on(Event::Transfer {
+            let _ = self.notify_on(Event::Transfer {
                 from: from.into(),
                 to,
                 value,
             });
-            
         }
 
         mutated
@@ -122,7 +121,7 @@ impl Service {
         });
 
         if mutated {
-            self.notify_on(Event::Transfer { from, to, value });
+            let _ = self.notify_on(Event::Transfer { from, to, value });
         }
 
         mutated
