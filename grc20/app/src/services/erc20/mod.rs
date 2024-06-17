@@ -1,17 +1,38 @@
-#![allow(clippy::unused_unit)]
-
-use crate::services;
 use core::fmt::Debug;
-use gstd::{format, msg, Decode, Encode, String, TypeInfo, Vec};
+use gstd::{collections::HashMap, format, msg, ActorId, Decode, Encode, String, TypeInfo, Vec};
 use primitive_types::U256;
 use sails_rtl::gstd::gservice;
-use storage::{AllowancesStorage, BalancesStorage, MetaStorage, TotalSupplyStorage};
 
 pub use utils::*;
 
 pub mod funcs;
-pub mod storage;
 pub(crate) mod utils;
+
+static mut PROGRAM: Option<Program> = None;
+
+#[derive(Debug, Default)]
+pub struct Program {
+    pub balances: HashMap<ActorId, NonZeroU256>,
+    pub allowances: HashMap<(ActorId, ActorId), NonZeroU256>,
+    pub meta: Metadata,
+    pub total_supply: U256,
+}
+
+impl Program {
+    pub fn get_mut() -> &'static mut Self {
+        unsafe { PROGRAM.as_mut().expect("Program is not initialized") }
+    }
+    pub fn get() -> &'static Self {
+        unsafe { PROGRAM.as_ref().expect("Program is not initialized") }
+    }
+}
+
+#[derive(Debug, Default)]
+pub struct Metadata {
+    pub name: String,
+    pub symbol: String,
+    pub decimals: u8,
+}
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, TypeInfo)]
 pub enum Event {
@@ -23,53 +44,41 @@ pub enum Event {
     Transfer {
         from: sails_rtl::ActorId,
         to: sails_rtl::ActorId,
-        // TODO (breathx and team): use or not to use `NonZeroU256`?
         value: U256,
     },
 }
 
 pub type GstdDrivenService = Service;
 
-// TODO (sails): isn't services - modules?
 #[derive(Clone)]
 pub struct Service();
 
 impl Service {
     pub fn seed(name: String, symbol: String, decimals: u8) -> Self {
-        let _res = AllowancesStorage::default();
-        debug_assert!(_res.is_ok());
-
-        let _res = BalancesStorage::default();
-        debug_assert!(_res.is_ok());
-
-        let _res = MetaStorage::with_data(name, symbol, decimals);
-        debug_assert!(_res.is_ok());
-
-        let _res = TotalSupplyStorage::default();
-        debug_assert!(_res.is_ok());
-
+        unsafe {
+            PROGRAM = Some(Program {
+                meta: Metadata {
+                    name,
+                    symbol,
+                    decimals,
+                },
+                ..Default::default()
+            });
+        }
         Self()
     }
 }
 
-// TODO (sails): consider renaming `EventTrigger` -> `Notifier`/`Informer`.
-// TODO (sails): fix that requires `Encode`, `Decode`, `TypeInfo` and `Vec` in scope.
-// TODO (sails): fix that requires explicit `-> ()`. ALREADY EXISTS
-// TODO (sails): let me specify error as subset of strings (Display of my Error) -> thats common flow for us.
-// TODO (sails): gstd::ActorId, primitive_types::H256/U256, [u8; 32], NonZeroStuff are primitives!.
-// TODO (sails): gservice(events = Event, error = Error)
-// #[gservice(events = Event, error = Error)]
 #[gservice(events = Event)]
 impl Service {
-    // TODO (sails): hide this into macro.
     pub fn new() -> Self {
         Self()
     }
 
     pub fn approve(&mut self, spender: sails_rtl::ActorId, value: U256) -> bool {
         let owner = msg::source();
-
-        let mutated = funcs::approve(AllowancesStorage::as_mut(), owner, spender.into(), value);
+        let program = Program::get_mut();
+        let mutated = funcs::approve(&mut program.allowances, owner, spender.into(), value);
 
         if mutated {
             let _ = self.notify_on(Event::Approval {
@@ -84,10 +93,9 @@ impl Service {
 
     pub fn transfer(&mut self, to: sails_rtl::ActorId, value: U256) -> bool {
         let from = msg::source();
-
-        let mutated = services::utils::panicking(move || {
-            funcs::transfer(BalancesStorage::as_mut(), from, to.into(), value)
-        });
+        let program = Program::get_mut();
+        let mutated =
+            panicking(move || funcs::transfer(&mut program.balances, from, to.into(), value));
 
         if mutated {
             let _ = self.notify_on(Event::Transfer {
@@ -100,7 +108,6 @@ impl Service {
         mutated
     }
 
-    // TODO (breathx): rename me once bug in sails fixed.
     pub fn transfer_from(
         &mut self,
         from: sails_rtl::ActorId,
@@ -108,11 +115,11 @@ impl Service {
         value: U256,
     ) -> bool {
         let spender = msg::source();
-
-        let mutated = services::utils::panicking(move || {
+        let program = Program::get_mut();
+        let mutated = panicking(move || {
             funcs::transfer_from(
-                AllowancesStorage::as_mut(),
-                BalancesStorage::as_mut(),
+                &mut program.allowances,
+                &mut program.balances,
                 spender,
                 from.into(),
                 to.into(),
@@ -128,27 +135,32 @@ impl Service {
     }
 
     pub fn allowance(&self, owner: sails_rtl::ActorId, spender: sails_rtl::ActorId) -> U256 {
-        funcs::allowance(AllowancesStorage::as_ref(), owner.into(), spender.into())
+        let program = Program::get();
+        funcs::allowance(&program.allowances, owner.into(), spender.into())
     }
 
     pub fn balance_of(&self, account: sails_rtl::ActorId) -> U256 {
-        funcs::balance_of(BalancesStorage::as_ref(), account.into())
+        let program = Program::get();
+        funcs::balance_of(&program.balances, account.into())
     }
 
     pub fn decimals(&self) -> u8 {
-        MetaStorage::decimals()
+        let program = Program::get();
+        program.meta.decimals
     }
 
-    // TODO (sails): allow using references.
     pub fn name(&self) -> String {
-        MetaStorage::name()
+        let program = Program::get();
+        program.meta.name.clone()
     }
 
     pub fn symbol(&self) -> String {
-        MetaStorage::symbol()
+        let program = Program::get();
+        program.meta.symbol.clone()
     }
 
     pub fn total_supply(&self) -> U256 {
-        TotalSupplyStorage::get()
+        let program = Program::get();
+        program.total_supply
     }
 }

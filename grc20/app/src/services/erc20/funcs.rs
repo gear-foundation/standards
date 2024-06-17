@@ -112,7 +112,6 @@ mod tests {
     use crate::erc20::funcs;
     use utils::*;
 
-    // TODO (breathx): force macros to assert storage noop.
     macro_rules! assert_ok {
         ( $x:expr, $y: expr $(,)? ) => {{
             assert_eq!($x.unwrap(), $y);

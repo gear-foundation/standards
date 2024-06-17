@@ -1,4 +1,5 @@
-use gstd::{collections::HashMap, ActorId, Decode, Encode, TypeInfo};
+use core::fmt::Debug;
+use gstd::{collections::HashMap, ext, format, ActorId, Decode, Encode, TypeInfo};
 use primitive_types::U256;
 
 pub type AllowancesMap = HashMap<(ActorId, ActorId), NonZeroU256>;
@@ -34,3 +35,14 @@ impl From<NonZeroU256> for U256 {
 
 #[derive(Debug)]
 pub struct TryFromU256Error(());
+
+pub fn panicking<T, E: Debug, F: FnOnce() -> Result<T, E>>(f: F) -> T {
+    match f() {
+        Ok(v) => v,
+        Err(e) => panic(e),
+    }
+}
+
+pub fn panic(err: impl Debug) -> ! {
+    ext::panic(&format!("{err:?}"))
+}
