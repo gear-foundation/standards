@@ -8,22 +8,30 @@ pub use utils::*;
 pub mod funcs;
 pub(crate) mod utils;
 
-static mut PROGRAM: Option<Program> = None;
+static mut ERC20_STORAGE: Option<Erc20Storage> = None;
 
 #[derive(Debug, Default)]
-pub struct Program {
-    pub balances: HashMap<ActorId, NonZeroU256>,
-    pub allowances: HashMap<(ActorId, ActorId), NonZeroU256>,
-    pub meta: Metadata,
-    pub total_supply: U256,
+struct Erc20Storage {
+    balances: HashMap<ActorId, NonZeroU256>,
+    allowances: HashMap<(ActorId, ActorId), NonZeroU256>,
+    meta: Metadata,
+    total_supply: U256,
 }
 
-impl Program {
+impl Erc20Storage {
     pub fn get_mut() -> &'static mut Self {
-        unsafe { PROGRAM.as_mut().expect("Program is not initialized") }
+        unsafe {
+            ERC20_STORAGE
+                .as_mut()
+                .expect("Erc20Storage is not initialized")
+        }
     }
     pub fn get() -> &'static Self {
-        unsafe { PROGRAM.as_ref().expect("Program is not initialized") }
+        unsafe {
+            ERC20_STORAGE
+                .as_ref()
+                .expect("Erc20Storage is not initialized")
+        }
     }
 }
 
@@ -48,15 +56,13 @@ pub enum Event {
     },
 }
 
-pub type GstdDrivenService = Service;
-
 #[derive(Clone)]
 pub struct Service();
 
 impl Service {
     pub fn seed(name: String, symbol: String, decimals: u8) -> Self {
         unsafe {
-            PROGRAM = Some(Program {
+            ERC20_STORAGE = Some(Erc20Storage {
                 meta: Metadata {
                     name,
                     symbol,
@@ -77,8 +83,8 @@ impl Service {
 
     pub fn approve(&mut self, spender: sails_rtl::ActorId, value: U256) -> bool {
         let owner = msg::source();
-        let program = Program::get_mut();
-        let mutated = funcs::approve(&mut program.allowances, owner, spender.into(), value);
+        let storage = Erc20Storage::get_mut();
+        let mutated = funcs::approve(&mut storage.allowances, owner, spender.into(), value);
 
         if mutated {
             let _ = self.notify_on(Event::Approval {
@@ -93,9 +99,9 @@ impl Service {
 
     pub fn transfer(&mut self, to: sails_rtl::ActorId, value: U256) -> bool {
         let from = msg::source();
-        let program = Program::get_mut();
+        let storage = Erc20Storage::get_mut();
         let mutated =
-            panicking(move || funcs::transfer(&mut program.balances, from, to.into(), value));
+            panicking(move || funcs::transfer(&mut storage.balances, from, to.into(), value));
 
         if mutated {
             let _ = self.notify_on(Event::Transfer {
@@ -115,11 +121,11 @@ impl Service {
         value: U256,
     ) -> bool {
         let spender = msg::source();
-        let program = Program::get_mut();
+        let storage = Erc20Storage::get_mut();
         let mutated = panicking(move || {
             funcs::transfer_from(
-                &mut program.allowances,
-                &mut program.balances,
+                &mut storage.allowances,
+                &mut storage.balances,
                 spender,
                 from.into(),
                 to.into(),
@@ -135,32 +141,32 @@ impl Service {
     }
 
     pub fn allowance(&self, owner: sails_rtl::ActorId, spender: sails_rtl::ActorId) -> U256 {
-        let program = Program::get();
-        funcs::allowance(&program.allowances, owner.into(), spender.into())
+        let storage = Erc20Storage::get();
+        funcs::allowance(&storage.allowances, owner.into(), spender.into())
     }
 
     pub fn balance_of(&self, account: sails_rtl::ActorId) -> U256 {
-        let program = Program::get();
-        funcs::balance_of(&program.balances, account.into())
+        let storage = Erc20Storage::get();
+        funcs::balance_of(&storage.balances, account.into())
     }
 
-    pub fn decimals(&self) -> u8 {
-        let program = Program::get();
-        program.meta.decimals
+    pub fn decimals(&self) -> &'static u8 {
+        let storage = Erc20Storage::get();
+        &storage.meta.decimals
     }
 
-    pub fn name(&self) -> String {
-        let program = Program::get();
-        program.meta.name.clone()
+    pub fn name(&self) -> &'static str {
+        let storage = Erc20Storage::get();
+        &storage.meta.name
     }
 
-    pub fn symbol(&self) -> String {
-        let program = Program::get();
-        program.meta.symbol.clone()
+    pub fn symbol(&self) -> &'static str {
+        let storage = Erc20Storage::get();
+        &storage.meta.symbol
     }
 
-    pub fn total_supply(&self) -> U256 {
-        let program = Program::get();
-        program.total_supply
+    pub fn total_supply(&self) -> &'static U256 {
+        let storage = Erc20Storage::get();
+        &storage.total_supply
     }
 }
