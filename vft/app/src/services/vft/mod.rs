@@ -8,30 +8,22 @@ pub use utils::*;
 pub mod funcs;
 pub(crate) mod utils;
 
-static mut ERC20_STORAGE: Option<Erc20Storage> = None;
+static mut STORAGE: Option<Storage> = None;
 
 #[derive(Debug, Default)]
-struct Erc20Storage {
+struct Storage {
     balances: HashMap<ActorId, NonZeroU256>,
     allowances: HashMap<(ActorId, ActorId), NonZeroU256>,
     meta: Metadata,
     total_supply: U256,
 }
 
-impl Erc20Storage {
+impl Storage {
     pub fn get_mut() -> &'static mut Self {
-        unsafe {
-            ERC20_STORAGE
-                .as_mut()
-                .expect("Erc20Storage is not initialized")
-        }
+        unsafe { STORAGE.as_mut().expect("Storage is not initialized") }
     }
     pub fn get() -> &'static Self {
-        unsafe {
-            ERC20_STORAGE
-                .as_ref()
-                .expect("Erc20Storage is not initialized")
-        }
+        unsafe { STORAGE.as_ref().expect("Storage is not initialized") }
     }
 }
 
@@ -62,7 +54,7 @@ pub struct Service();
 impl Service {
     pub fn seed(name: String, symbol: String, decimals: u8) -> Self {
         unsafe {
-            ERC20_STORAGE = Some(Erc20Storage {
+            STORAGE = Some(Storage {
                 meta: Metadata {
                     name,
                     symbol,
@@ -83,7 +75,7 @@ impl Service {
 
     pub fn approve(&mut self, spender: sails_rtl::ActorId, value: U256) -> bool {
         let owner = msg::source();
-        let storage = Erc20Storage::get_mut();
+        let storage = Storage::get_mut();
         let mutated = funcs::approve(&mut storage.allowances, owner, spender.into(), value);
 
         if mutated {
@@ -99,7 +91,7 @@ impl Service {
 
     pub fn transfer(&mut self, to: sails_rtl::ActorId, value: U256) -> bool {
         let from = msg::source();
-        let storage = Erc20Storage::get_mut();
+        let storage = Storage::get_mut();
         let mutated =
             panicking(move || funcs::transfer(&mut storage.balances, from, to.into(), value));
 
@@ -121,7 +113,7 @@ impl Service {
         value: U256,
     ) -> bool {
         let spender = msg::source();
-        let storage = Erc20Storage::get_mut();
+        let storage = Storage::get_mut();
         let mutated = panicking(move || {
             funcs::transfer_from(
                 &mut storage.allowances,
@@ -141,32 +133,32 @@ impl Service {
     }
 
     pub fn allowance(&self, owner: sails_rtl::ActorId, spender: sails_rtl::ActorId) -> U256 {
-        let storage = Erc20Storage::get();
+        let storage = Storage::get();
         funcs::allowance(&storage.allowances, owner.into(), spender.into())
     }
 
     pub fn balance_of(&self, account: sails_rtl::ActorId) -> U256 {
-        let storage = Erc20Storage::get();
+        let storage = Storage::get();
         funcs::balance_of(&storage.balances, account.into())
     }
 
     pub fn decimals(&self) -> &'static u8 {
-        let storage = Erc20Storage::get();
+        let storage = Storage::get();
         &storage.meta.decimals
     }
 
     pub fn name(&self) -> &'static str {
-        let storage = Erc20Storage::get();
+        let storage = Storage::get();
         &storage.meta.name
     }
 
     pub fn symbol(&self) -> &'static str {
-        let storage = Erc20Storage::get();
+        let storage = Storage::get();
         &storage.meta.symbol
     }
 
     pub fn total_supply(&self) -> &'static U256 {
-        let storage = Erc20Storage::get();
+        let storage = Storage::get();
         &storage.total_supply
     }
 }

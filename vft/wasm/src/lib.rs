@@ -1,4 +1,4 @@
 #![no_std]
 
 #[cfg(target_arch = "wasm32")]
-pub use erc20::wasm::*;
+pub use vft::wasm::*;
