@@ -124,14 +124,26 @@ impl VftMaster {
         self.ensure_is_admin();
         self.data_mut().burners.remove(&from);
     }
+    pub fn minters(&self) -> Vec<ActorId> {
+        self.data().minters.iter().map(|&key| key.clone()).collect()
+    }
 
-    pub fn ensure_is_admin(&self) {
+    pub fn burners(&self) -> Vec<ActorId> {
+        self.data().burners.iter().map(|&key| key.clone()).collect()
+    }
+
+    pub fn admins(&self) -> Vec<ActorId> {
+        self.data().admins.iter().map(|&key| key.clone()).collect()
+    }
+}
+
+impl VftMaster {
+    fn ensure_is_admin(&self) {
         if !self.data().admins.contains(&msg::source()) {
             panic!("Not admin")
         };
     }
 }
-
 impl AsRef<vft::Service> for VftMaster {
     fn as_ref(&self) -> &vft::Service {
         &self.vft
