@@ -109,7 +109,7 @@ pub fn transfer_from(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::vft::funcs;
+    use crate::services::vft::funcs;
     use utils::*;
 
     macro_rules! assert_ok {

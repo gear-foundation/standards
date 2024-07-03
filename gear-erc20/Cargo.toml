@@ -11,11 +11,11 @@ edition = "2021"
 license = "GPL-3.0"
 
 [workspace.dependencies]
-gstd = "1.1.1"
-gtest = "1.1.1"
-gclient = "1.1.1"
-gear-core = "1.1.1"
-gwasm-builder = { package = "gear-wasm-builder", version = "1.1.1" }
+gstd = "=1.1.1"
+gtest = "=1.1.1"
+gclient = "=1.1.1"
+gear-core = "=1.1.1"
+gwasm-builder = { package = "gear-wasm-builder", version = "=1.1.1" }
 parity-scale-codec = { version = "3.6", default-features = false }
 sails-idl-gen = { git = "https://github.com/gear-tech/sails", rev = "51b731ef8f064a23c6c98fa92d06eeafe44d3f9d" }
 sails-rtl = { git = "https://github.com/gear-tech/sails", rev = "51b731ef8f064a23c6c98fa92d06eeafe44d3f9d" }

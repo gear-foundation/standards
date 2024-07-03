@@ -1,8 +1,8 @@
+use crate::services;
 use core::fmt::Debug;
 use gstd::{collections::HashMap, format, msg, ActorId, Decode, Encode, String, TypeInfo, Vec};
 use primitive_types::U256;
-use sails_rtl::gstd::gservice;
-
+use sails_rtl::{gstd::gservice, prelude::*};
 pub use utils::*;
 
 pub mod funcs;
@@ -11,7 +11,7 @@ pub(crate) mod utils;
 static mut STORAGE: Option<Storage> = None;
 
 #[derive(Debug, Default)]
-struct Storage {
+pub struct Storage {
     balances: HashMap<ActorId, NonZeroU256>,
     allowances: HashMap<(ActorId, ActorId), NonZeroU256>,
     meta: Metadata,
@@ -24,6 +24,14 @@ impl Storage {
     }
     pub fn get() -> &'static Self {
         unsafe { STORAGE.as_ref().expect("Storage is not initialized") }
+    }
+    pub fn balances() -> &'static mut HashMap<ActorId, NonZeroU256> {
+        let storage = unsafe { STORAGE.as_mut().expect("Storage is not initialized") };
+        &mut storage.balances
+    }
+    pub fn total_supply() -> &'static mut U256 {
+        let storage = unsafe { STORAGE.as_mut().expect("Storage is not initialized") };
+        &mut storage.total_supply
     }
 }
 
@@ -92,8 +100,9 @@ impl Service {
     pub fn transfer(&mut self, to: sails_rtl::ActorId, value: U256) -> bool {
         let from = msg::source();
         let storage = Storage::get_mut();
-        let mutated =
-            panicking(move || funcs::transfer(&mut storage.balances, from, to.into(), value));
+        let mutated = services::utils::panicking(move || {
+            funcs::transfer(&mut storage.balances, from, to.into(), value)
+        });
 
         if mutated {
             let _ = self.notify_on(Event::Transfer {
@@ -114,7 +123,7 @@ impl Service {
     ) -> bool {
         let spender = msg::source();
         let storage = Storage::get_mut();
-        let mutated = panicking(move || {
+        let mutated = services::utils::panicking(move || {
             funcs::transfer_from(
                 &mut storage.allowances,
                 &mut storage.balances,
