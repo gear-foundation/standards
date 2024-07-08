@@ -2,11 +2,12 @@ constructor {
   New : (name: str, symbol: str, decimals: u8);
 };
 
-service VftMaster {
+service Vft {
   BatchMint : (to: vec actor_id, value: vec u256) -> bool;
   Burn : (from: actor_id, value: u256) -> bool;
   GrantBurnerRole : (to: actor_id) -> null;
   GrantMinterRole : (to: actor_id) -> null;
+  Mint : (to: actor_id, value: u256) -> bool;
   RevokeBurnerRole : (from: actor_id) -> null;
   RevokeMinterRole : (from: actor_id) -> null;
   Approve : (spender: actor_id, value: u256) -> bool;
@@ -23,6 +24,7 @@ service VftMaster {
   query TotalSupply : () -> u256;
 
   events {
+    Minted: struct { to: actor_id, value: u256 };
     BatchMinted: struct { to: vec actor_id, value: vec u256 };
     Burned: struct { from: actor_id, value: u256 };
     Approval: struct { owner: actor_id, spender: actor_id, value: u256 };

@@ -25,7 +25,7 @@ pub fn batch_mint(
     Ok(true)
 }
 
-fn mint(
+pub fn mint(
     balances: &mut BalancesMap,
     total_supply: &mut U256,
     to: ActorId,

@@ -17,6 +17,10 @@ static mut VFT_MASTER_DATA: Option<VftMasterData> = None;
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum VftMasterEvent {
+    Minted {
+        to: sails_rtl::ActorId,
+        value: U256,
+    },
     BatchMinted {
         to: Vec<sails_rtl::ActorId>,
         value: Vec<U256>,
@@ -69,6 +73,26 @@ impl VftMaster {
             vft: vft::Service::new(),
         }
     }
+
+    pub fn mint(&mut self, to: ActorId, value: U256) -> bool {
+        if !self.data().minters.contains(&msg::source()) {
+            panic!("Not allowed to mint")
+        };
+
+        let mutated = services::utils::panicking(|| {
+            funcs::mint(
+                &mut Storage::balances(),
+                &mut Storage::total_supply(),
+                to.clone(),
+                value.clone(),
+            )
+        });
+        if mutated {
+            let _ = self.notify_on(VftMasterEvent::Minted { to, value });
+        }
+        mutated
+    }
+
     pub fn batch_mint(&mut self, to: Vec<ActorId>, value: Vec<U256>) -> bool {
         if !self.data().minters.contains(&msg::source()) {
             panic!("Not allowed to mint")
