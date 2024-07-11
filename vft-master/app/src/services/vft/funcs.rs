@@ -1,7 +1,6 @@
-use super::utils::{Result, *};
+use super::utils::{Result, *, Error};
 use gstd::{prelude::*, ActorId};
-use primitive_types::U256;
-
+use sails_rtl::prelude::*;
 pub fn allowance(allowances: &AllowancesMap, owner: ActorId, spender: ActorId) -> U256 {
     allowances
         .get(&(owner, spender))
@@ -22,7 +21,7 @@ pub fn approve(
 
     let key = (owner, spender);
 
-    let Ok(non_zero_value) = value.try_into() else {
+    let Some(non_zero_value) = NonZeroU256::new(value) else {
         return allowances.remove(&key).is_some();
     };
 
@@ -57,11 +56,11 @@ pub fn transfer(
         .checked_add(value)
         .ok_or(Error::NumericOverflow)?;
 
-    let Ok(non_zero_new_to) = new_to.try_into() else {
+    let Some(non_zero_new_to) = NonZeroU256::new(new_to) else {
         unreachable!("Infallible since fn is noop on zero value; qed");
     };
 
-    if let Ok(non_zero_new_from) = new_from.try_into() {
+    if let Some(non_zero_new_from) = NonZeroU256::new(new_from) {
         balances.insert(from, non_zero_new_from);
     } else {
         balances.remove(&from);
@@ -97,7 +96,7 @@ pub fn transfer_from(
 
     let key = (from, spender);
 
-    if let Ok(non_zero_new_allowance) = new_allowance.try_into() {
+    if let Some(non_zero_new_allowance) = NonZeroU256::new(new_allowance) {
         allowances.insert(key, non_zero_new_allowance);
     } else {
         allowances.remove(&key);

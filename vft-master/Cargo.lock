@@ -4858,7 +4858,7 @@ checksum = "f3cb5ba0dc43242ce17de99c180e96db90b235b8a9fdc9543c96d2209116bd9f"
 [[package]]
 name = "sails-idl-gen"
 version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails?branch=dd/single-await#c3dd36358a9a8ac846cd0ab865c130c2cb1fd930"
+source = "git+https://github.com/gear-tech/sails#ce5e6f8cc0bd5595cc93ee7206dc6d0060bee427"
 dependencies = [
  "convert_case 0.6.0",
  "handlebars",
@@ -4872,7 +4872,7 @@ dependencies = [
 [[package]]
 name = "sails-macros"
 version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails?branch=dd/single-await#c3dd36358a9a8ac846cd0ab865c130c2cb1fd930"
+source = "git+https://github.com/gear-tech/sails#ce5e6f8cc0bd5595cc93ee7206dc6d0060bee427"
 dependencies = [
  "proc-macro-error",
  "sails-macros-core",
@@ -4881,7 +4881,7 @@ dependencies = [
 [[package]]
 name = "sails-macros-core"
 version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails?branch=dd/single-await#c3dd36358a9a8ac846cd0ab865c130c2cb1fd930"
+source = "git+https://github.com/gear-tech/sails#ce5e6f8cc0bd5595cc93ee7206dc6d0060bee427"
 dependencies = [
  "const_format",
  "convert_case 0.6.0",
@@ -4895,9 +4895,10 @@ dependencies = [
 [[package]]
 name = "sails-rtl"
 version = "0.0.1"
-source = "git+https://github.com/gear-tech/sails?branch=dd/single-await#c3dd36358a9a8ac846cd0ab865c130c2cb1fd930"
+source = "git+https://github.com/gear-tech/sails#ce5e6f8cc0bd5595cc93ee7206dc6d0060bee427"
 dependencies = [
  "futures",
+ "gclient",
  "gear-core-errors",
  "gprimitives",
  "gstd",
@@ -6752,7 +6753,6 @@ dependencies = [
  "gtest",
  "log",
  "parity-scale-codec",
- "primitive-types",
  "sails-rtl",
  "scale-info",
  "tokio",

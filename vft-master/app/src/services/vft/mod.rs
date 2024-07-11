@@ -1,9 +1,7 @@
 use crate::services;
 use core::fmt::Debug;
 use gstd::{collections::HashMap, format, msg, ActorId, Decode, Encode, String, TypeInfo, Vec};
-use primitive_types::U256;
 use sails_rtl::{gstd::gservice, prelude::*};
-pub use utils::*;
 
 pub mod funcs;
 pub(crate) mod utils;

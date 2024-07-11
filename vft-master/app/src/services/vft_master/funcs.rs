@@ -1,10 +1,9 @@
 use super::vft::{
     funcs,
-    utils::{Result, *},
+    utils::{Result, *, Error},
 };
 use gstd::{prelude::*, ActorId};
-use primitive_types::U256;
-
+use sails_rtl::prelude::*;
 pub fn mint(
     balances: &mut BalancesMap,
     total_supply: &mut U256,
@@ -23,7 +22,7 @@ pub fn mint(
         .checked_add(value)
         .ok_or(Error::NumericOverflow)?;
 
-    let Ok(non_zero_new_to) = new_to.try_into() else {
+    let Some(non_zero_new_to) = NonZeroU256::new(new_to) else {
         unreachable!("Infallible since fn is noop on zero value; qed");
     };
 
@@ -48,7 +47,7 @@ pub fn burn(
         .checked_sub(value)
         .ok_or(Error::InsufficientBalance)?;
 
-    if let Ok(non_zero_new_from) = new_from.try_into() {
+    if let Some(non_zero_new_from) = NonZeroU256::new(new_from) {
         balances.insert(from, non_zero_new_from);
     } else {
         balances.remove(&from);
