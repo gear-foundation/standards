@@ -1,5 +1,5 @@
 [package]
-name = "vft-master-wasm"
+name = "vft_master_wasm"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -14,3 +14,4 @@ vft-master-app = { path = "../app" }
 
 [lib]
 crate-type = ["rlib"]
+name = "vft_master_wasm"
