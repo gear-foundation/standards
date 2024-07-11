@@ -2,7 +2,7 @@ constructor {
   New : (name: str, symbol: str, decimals: u8);
 };
 
-service VftMaster {
+service Vft {
   Burn : (from: actor_id, value: u256) -> bool;
   GrantBurnerRole : (to: actor_id) -> null;
   GrantMinterRole : (to: actor_id) -> null;

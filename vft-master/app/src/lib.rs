@@ -14,7 +14,7 @@ impl Program {
         Self(())
     }
 
-    pub fn vft_master(&self) -> VftMaster {
+    pub fn vft(&self) -> VftMaster {
         VftMaster::new()
     }
 }
