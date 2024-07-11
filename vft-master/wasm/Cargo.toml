@@ -11,3 +11,6 @@ vft-master-app = { path = "../app" }
 gwasm-builder.workspace = true
 sails-idl-gen.workspace = true
 vft-master-app = { path = "../app" }
+
+[lib]
+crate-type = ["rlib"]
