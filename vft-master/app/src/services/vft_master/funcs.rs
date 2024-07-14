@@ -3,7 +3,7 @@ use super::vft::{
     utils::{Result, *, Error},
 };
 use gstd::{prelude::*, ActorId};
-use sails_rtl::prelude::*;
+use sails::prelude::*;
 pub fn mint(
     balances: &mut BalancesMap,
     total_supply: &mut U256,

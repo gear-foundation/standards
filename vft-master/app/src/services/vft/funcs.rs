@@ -1,6 +1,5 @@
 use super::utils::{Result, *, Error};
-use gstd::{prelude::*, ActorId};
-use sails_rtl::prelude::*;
+use sails::prelude::*;
 pub fn allowance(allowances: &AllowancesMap, owner: ActorId, spender: ActorId) -> U256 {
     allowances
         .get(&(owner, spender))

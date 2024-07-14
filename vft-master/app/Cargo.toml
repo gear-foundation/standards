@@ -7,7 +7,7 @@ license.workspace = true
 [dependencies]
 gstd.workspace = true
 log.workspace = true
-sails-rtl.workspace = true
+sails.workspace = true
 parity-scale-codec.workspace = true
 scale-info.workspace = true
 

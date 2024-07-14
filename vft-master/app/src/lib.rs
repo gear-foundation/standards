@@ -2,7 +2,7 @@
 #![allow(clippy::new_without_default)]
 
 use gstd::String;
-use sails_rtl::gstd::gprogram;
+use sails::gstd::gprogram;
 mod services;
 use services::vft_master::VftMaster;
 pub struct Program(());

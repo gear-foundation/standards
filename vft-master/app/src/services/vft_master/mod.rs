@@ -2,7 +2,7 @@ use super::vft;
 use super::vft::Storage;
 use collections::HashSet;
 use gstd::msg;
-use sails_rtl::{gstd::gservice, prelude::*};
+use sails::{gstd::gservice, prelude::*};
 mod funcs;
 use crate::services;
 
@@ -18,11 +18,11 @@ static mut VFT_MASTER_DATA: Option<VftMasterData> = None;
 #[derive(Encode, Decode, TypeInfo)]
 pub enum VftMasterEvent {
     Minted {
-        to: sails_rtl::ActorId,
+        to: ActorId,
         value: U256,
     },
     Burned {
-        from: sails_rtl::ActorId,
+        from: ActorId,
         value: U256,
     },
 }
