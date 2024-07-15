@@ -1,0 +1,17 @@
+[package]
+name = "extended_vft_wasm"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+extended-vft-app = { path = "../app" }
+
+[build-dependencies]
+gwasm-builder.workspace = true
+sails-idl-gen.workspace = true
+extended-vft-app = { path = "../app" }
+
+[lib]
+crate-type = ["rlib"]
+name = "extended_vft_wasm"

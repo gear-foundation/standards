@@ -1,0 +1,13 @@
+[package]
+name = "vft-wasm"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+vft = { path = "../app" }
+
+[build-dependencies]
+gwasm-builder.workspace = true
+sails-idl-gen.workspace = true
+vft = { path = "../app" }
