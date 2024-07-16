@@ -1,10 +1,9 @@
-use super::vft;
-use super::vft::Storage;
-use collections::HashSet;
+
 use gstd::msg;
-use sails::{gstd::gservice, prelude::*};
+use sails::{gstd::gservice, collections::HashSet, prelude::*};
 mod funcs;
 use crate::services;
+use vft::{Storage, Service as VftService};
 
 #[derive(Default)]
 pub struct ExtendedStorage {
@@ -22,7 +21,7 @@ pub enum Event {
 }
 #[derive(Clone)]
 pub struct ExtendedService {
-    vft: vft::Service,
+    vft: VftService,
 }
 
 impl ExtendedService {
@@ -36,7 +35,7 @@ impl ExtendedService {
             });
         };
         ExtendedService {
-            vft: <vft::Service>::seed(name, symbol, decimals),
+            vft: <VftService>::seed(name, symbol, decimals),
         }
     }
 
@@ -56,11 +55,11 @@ impl ExtendedService {
     }
 }
 
-#[gservice(extends = vft::Service, events = Event)]
+#[gservice(extends = VftService, events = Event)]
 impl ExtendedService {
     pub fn new() -> Self {
         Self {
-            vft: vft::Service::new(),
+            vft: VftService::new(),
         }
     }
     pub fn mint(&mut self, to: ActorId, value: U256) -> bool {
@@ -128,8 +127,8 @@ impl ExtendedService {
         };
     }
 }
-impl AsRef<vft::Service> for ExtendedService {
-    fn as_ref(&self) -> &vft::Service {
+impl AsRef<VftService> for ExtendedService {
+    fn as_ref(&self) -> &VftService {
         &self.vft
     }
 }
