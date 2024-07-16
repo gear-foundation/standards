@@ -1,0 +1,18 @@
+[package]
+name = "vft"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0"
+
+[dependencies]
+gstd = "1.4.2"
+log = "*"
+sails = { git = "https://github.com/gear-tech/sails" }
+parity-scale-codec = { version = "3.6", default-features = false }
+scale-info = { version = "2.10", default-features = false }
+
+[dev-dependencies]
+env_logger = "*"
+gtest = "1.4.2"
+gear-core = "1.4.2"
+

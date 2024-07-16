@@ -1,9 +1,9 @@
 use core::fmt::Debug;
-use gstd::{collections::HashMap, ActorId, Decode, Encode, TypeInfo};
+use gstd::{collections::HashMap, ActorId, Decode, Encode, TypeInfo,ext, format};
 use sails::prelude::*;
 pub type AllowancesMap = HashMap<(ActorId, ActorId), NonZeroU256>;
 pub type BalancesMap = HashMap<ActorId, NonZeroU256>;
-pub(crate) type Result<T, E = Error> = core::result::Result<T, E>;
+pub type Result<T, E = Error> = core::result::Result<T, E>;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, TypeInfo)]
 pub enum Error {
@@ -11,4 +11,15 @@ pub enum Error {
     InsufficientBalance,
     NumericOverflow,
     Underflow,
+}
+
+pub fn panicking<T, E: Debug, F: FnOnce() -> Result<T, E>>(f: F) -> T {
+    match f() {
+        Ok(v) => v,
+        Err(e) => panic(e),
+    }
+}
+
+pub fn panic(err: impl Debug) -> ! {
+    ext::panic(&format!("{err:?}"))
 }
