@@ -1,6 +1,5 @@
 use super::utils::{Error, Result, *};
 use sails::prelude::*;
-
 pub fn allowance(allowances: &AllowancesMap, owner: ActorId, spender: ActorId) -> U256 {
     allowances
         .get(&(owner, spender))
