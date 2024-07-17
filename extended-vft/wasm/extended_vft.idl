@@ -4,9 +4,11 @@ constructor {
 
 service Vft {
   Burn : (from: actor_id, value: u256) -> bool;
+  GrantAdminRole : (to: actor_id) -> null;
   GrantBurnerRole : (to: actor_id) -> null;
   GrantMinterRole : (to: actor_id) -> null;
   Mint : (to: actor_id, value: u256) -> bool;
+  RevokeAdminRole : (from: actor_id) -> null;
   RevokeBurnerRole : (from: actor_id) -> null;
   RevokeMinterRole : (from: actor_id) -> null;
   Approve : (spender: actor_id, value: u256) -> bool;

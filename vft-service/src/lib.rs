@@ -1,7 +1,7 @@
 #![no_std]
 use core::fmt::Debug;
 use gstd::{collections::HashMap, format, msg, ActorId, Decode, Encode, String, TypeInfo, Vec};
-use sails::{gstd::gservice, prelude::*, panic};
+use sails::{gstd::gservice, panic, prelude::*};
 
 pub mod funcs;
 pub mod utils;
@@ -98,9 +98,8 @@ impl Service {
     pub fn transfer(&mut self, to: ActorId, value: U256) -> bool {
         let from = msg::source();
         let storage = Storage::get_mut();
-        let mutated = utils::panicking(move || {
-            funcs::transfer(&mut storage.balances, from, to, value)
-        });
+        let mutated =
+            utils::panicking(move || funcs::transfer(&mut storage.balances, from, to, value));
 
         if mutated {
             let _ = self.notify_on(Event::Transfer { from, to, value });

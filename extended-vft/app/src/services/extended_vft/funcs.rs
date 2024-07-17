@@ -1,9 +1,9 @@
+use gstd::{prelude::*, ActorId};
+use sails::prelude::*;
 use vft::{
     funcs,
     utils::{Error, Result, *},
 };
-use gstd::{prelude::*, ActorId};
-use sails::prelude::*;
 
 pub fn mint(
     balances: &mut BalancesMap,

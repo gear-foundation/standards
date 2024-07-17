@@ -1,9 +1,8 @@
-
 use gstd::msg;
-use sails::{gstd::gservice, collections::HashSet, prelude::*};
+use sails::{collections::HashSet, gstd::gservice, prelude::*};
 mod funcs;
 use crate::services;
-use vft::{Storage, Service as VftService};
+use vft::{Service as VftService, Storage};
 
 #[derive(Default)]
 pub struct ExtendedStorage {
@@ -90,6 +89,10 @@ impl ExtendedService {
         mutated
     }
 
+    pub fn grant_admin_role(&mut self, to: ActorId) {
+        self.ensure_is_admin();
+        self.get_mut().admins.insert(to);
+    }
     pub fn grant_minter_role(&mut self, to: ActorId) {
         self.ensure_is_admin();
         self.get_mut().minters.insert(to);
@@ -99,6 +102,10 @@ impl ExtendedService {
         self.get_mut().burners.insert(to);
     }
 
+    pub fn revoke_admin_role(&mut self, from: ActorId) {
+        self.ensure_is_admin();
+        self.get_mut().admins.remove(&from);
+    }
     pub fn revoke_minter_role(&mut self, from: ActorId) {
         self.ensure_is_admin();
         self.get_mut().minters.remove(&from);
