@@ -1,4 +1,4 @@
-use super::vft::{
+use vft::{
     funcs,
     utils::{Error, Result, *},
 };

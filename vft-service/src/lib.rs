@@ -1,10 +1,10 @@
-use crate::services;
+#![no_std]
 use core::fmt::Debug;
 use gstd::{collections::HashMap, format, msg, ActorId, Decode, Encode, String, TypeInfo, Vec};
-use sails::{gstd::gservice, prelude::*};
+use sails::{gstd::gservice, prelude::*, panic};
 
 pub mod funcs;
-pub(crate) mod utils;
+pub mod utils;
 
 static mut STORAGE: Option<Storage> = None;
 
@@ -98,7 +98,7 @@ impl Service {
     pub fn transfer(&mut self, to: ActorId, value: U256) -> bool {
         let from = msg::source();
         let storage = Storage::get_mut();
-        let mutated = services::utils::panicking(move || {
+        let mutated = utils::panicking(move || {
             funcs::transfer(&mut storage.balances, from, to, value)
         });
 
@@ -112,7 +112,7 @@ impl Service {
     pub fn transfer_from(&mut self, from: ActorId, to: ActorId, value: U256) -> bool {
         let spender = msg::source();
         let storage = Storage::get_mut();
-        let mutated = services::utils::panicking(move || {
+        let mutated = utils::panicking(move || {
             funcs::transfer_from(
                 &mut storage.allowances,
                 &mut storage.balances,
