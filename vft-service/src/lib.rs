@@ -1,7 +1,7 @@
 #![no_std]
 use core::fmt::Debug;
 use gstd::{collections::HashMap, format, msg, ActorId, Decode, Encode, String, TypeInfo, Vec};
-use sails::{gstd::gservice, panic, prelude::*};
+use sails_rs::{gstd::gservice, panic, prelude::*};
 
 pub mod funcs;
 pub mod utils;

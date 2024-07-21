@@ -1,5 +1,5 @@
 use super::utils::{Error, Result, *};
-use sails::prelude::*;
+use sails_rs::prelude::*;
 
 pub fn allowance(allowances: &AllowancesMap, owner: ActorId, spender: ActorId) -> U256 {
     allowances
