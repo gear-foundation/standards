@@ -1,8 +1,7 @@
 #![no_std]
 #![allow(clippy::new_without_default)]
 
-use gstd::String;
-use sails::gstd::gprogram;
+use sails_rs::prelude::*;
 mod services;
 use services::extended_vft::ExtendedService;
 pub struct Program(());
