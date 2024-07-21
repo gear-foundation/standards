@@ -1,8 +1,8 @@
 use gstd::msg;
-use sails::{collections::HashSet, gstd::gservice, prelude::*};
+use sails_rs::{collections::HashSet, gstd::gservice, prelude::*};
 mod funcs;
 use crate::services;
-use vft::{Service as VftService, Storage};
+use vft_service::{Service as VftService, Storage};
 
 #[derive(Default)]
 pub struct ExtendedStorage {

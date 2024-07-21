@@ -1,6 +1,6 @@
 use gstd::{prelude::*, ActorId};
-use sails::prelude::*;
-use vft::{
+use sails_rs::prelude::*;
+use vft_service::{
     funcs,
     utils::{Error, Result, *},
 };

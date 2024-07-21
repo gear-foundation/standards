@@ -7,10 +7,10 @@ license.workspace = true
 [dependencies]
 gstd.workspace = true
 log.workspace = true
-sails.workspace = true
+sails-rs.workspace = true
 parity-scale-codec.workspace = true
 scale-info.workspace = true
-vft.workspace = true
+vft-service.workspace = true
 
 [dev-dependencies]
 env_logger.workspace = true
