@@ -28,7 +28,7 @@ jobs:
         run: rustup component add rustfmt
 
       - name: Check formatting
-        run: cargo fmt --manifest-path vft-service/Cargo.toml -- --check
+        run: cargo fmt --all --manifest-path vft-service/Cargo.toml -- --check
 
       - name: Run Clippy
         run: cargo clippy --manifest-path vft-service/Cargo.toml -- -D warnings
@@ -37,6 +37,7 @@ jobs:
         run: cargo b -r
 
   extend-vft:
+    needs: [vft-service]
     name: ExtendVft
     runs-on: ubuntu-latest
 
@@ -57,7 +58,7 @@ jobs:
       run: rustup component add rustfmt
 
     - name: Check formatting
-      run: cargo fmt --manifest-path extended-vft/Cargo.toml -- --check
+      run: cargo fmt --all --manifest-path extended-vft/Cargo.toml -- --check
 
     - name: Run Clippy
       run: cargo clippy --manifest-path extended-vft/Cargo.toml -- -D warnings
