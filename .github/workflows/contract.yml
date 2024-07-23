@@ -33,9 +33,6 @@ jobs:
       - name: Run Clippy
         run: cargo clippy --manifest-path vft-service/Cargo.toml -- -D warnings
 
-      - name: Run Build
-        run: cargo b -r
-
   extend-vft:
     needs: [vft-service]
     name: ExtendVft
