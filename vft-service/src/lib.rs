@@ -1,8 +1,8 @@
 #![no_std]
 #![allow(clippy::new_without_default)]
 use core::fmt::Debug;
-use gstd::{collections::HashMap, format, msg, Decode, Encode, String, TypeInfo, Vec};
-use sails_rs::{gstd::service, panic, prelude::*};
+use gstd::{collections::HashMap, msg, Decode, Encode, String, TypeInfo};
+use sails_rs::{gstd::service, prelude::*};
 
 pub mod funcs;
 pub mod utils;
