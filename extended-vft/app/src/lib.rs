@@ -6,7 +6,7 @@ mod services;
 use services::extended_vft::ExtendedService;
 pub struct Program(());
 
-#[gprogram]
+#[program]
 impl Program {
     pub fn new(name: String, symbol: String, decimals: u8) -> Self {
         ExtendedService::seed(name, symbol, decimals);
