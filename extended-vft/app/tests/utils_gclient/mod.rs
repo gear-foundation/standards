@@ -104,37 +104,6 @@ macro_rules! send_request {
     };
 }
 
-// pub async fn get_balance(
-//     api: &GearApi,
-//     program_id: ProgramId,
-//     listener: &mut gclient::EventListener,
-//     from: ActorId,
-// ) -> U256 {
-//     let request = ["Vft".encode(), "BalanceOf".to_string().encode(), (from).encode()].concat();
-
-//     let gas_info = api
-//         .calculate_handle_gas(None, program_id, request.clone(), 0, true)
-//         .await
-//         .expect("Error calculate handle gas");
-
-//     let (message_id, _) = api
-//         .send_message_bytes(program_id, request.clone(), gas_info.min_limit, 0)
-//         .await
-//         .expect("Error send message bytes");
-
-//     let (_, raw_reply, _) = listener
-//         .reply_bytes_on(message_id)
-//         .await
-//         .expect("Error listen reply");
-
-//     let decoded_reply: (String, String, U256) = match raw_reply {
-//         Ok(raw_reply) => decode(raw_reply).expect("Erroe decode reply"),
-//         Err(_error) => gstd::panic!("Error in getting reply"),
-//     };
-//     // println!("decoded_reply {:?}", decoded_reply);
-//     decoded_reply.2
-// }
-
 #[macro_export]
 macro_rules! get_state {
 

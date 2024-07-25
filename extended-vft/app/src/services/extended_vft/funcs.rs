@@ -1,4 +1,3 @@
-use gstd::{prelude::*, ActorId};
 use sails_rs::prelude::*;
 use vft_service::{
     funcs,

@@ -1,5 +1,5 @@
 use gstd::msg;
-use sails_rs::{collections::HashSet, gstd::gservice, prelude::*};
+use sails_rs::{collections::HashSet, gstd::service, prelude::*};
 mod funcs;
 use crate::services;
 use vft_service::{Service as VftService, Storage};
@@ -54,7 +54,7 @@ impl ExtendedService {
     }
 }
 
-#[gservice(extends = VftService, events = Event)]
+#[service(extends = VftService, events = Event)]
 impl ExtendedService {
     pub fn new() -> Self {
         Self {

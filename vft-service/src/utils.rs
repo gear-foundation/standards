@@ -1,5 +1,5 @@
 use core::fmt::Debug;
-use gstd::{collections::HashMap, ext, format, ActorId, Decode, Encode, TypeInfo};
+use gstd::{collections::HashMap, ext, format, Decode, Encode, TypeInfo};
 use sails_rs::prelude::*;
 pub type AllowancesMap = HashMap<(ActorId, ActorId), NonZeroU256>;
 pub type BalancesMap = HashMap<ActorId, NonZeroU256>;
