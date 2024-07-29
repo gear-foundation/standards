@@ -1,8 +1,8 @@
 use core::fmt::Debug;
 use gstd::{collections::HashMap, ext, format, Decode, Encode, TypeInfo};
 use sails_rs::prelude::*;
-pub type AllowancesMap = HashMap<(ActorId, ActorId), NonZeroU256>;
-pub type BalancesMap = HashMap<ActorId, NonZeroU256>;
+pub type AllowancesMap = HashMap<(ActorId, ActorId), U256>;
+pub type BalancesMap = HashMap<ActorId, U256>;
 pub type Result<T, E = Error> = core::result::Result<T, E>;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, TypeInfo)]

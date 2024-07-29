@@ -22,11 +22,7 @@ pub fn mint(
         .checked_add(value)
         .ok_or(Error::NumericOverflow)?;
 
-    let Some(non_zero_new_to) = NonZeroU256::new(new_to) else {
-        unreachable!("Infallible since fn is noop on zero value; qed");
-    };
-
-    balances.insert(to, non_zero_new_to);
+    balances.insert(to, new_to);
     *total_supply = new_total_supply;
 
     Ok(true)
@@ -47,11 +43,12 @@ pub fn burn(
         .checked_sub(value)
         .ok_or(Error::InsufficientBalance)?;
 
-    if let Some(non_zero_new_from) = NonZeroU256::new(new_from) {
-        balances.insert(from, non_zero_new_from);
+    if !new_from.is_zero() {
+        balances.insert(from, new_from);
     } else {
         balances.remove(&from);
     }
+    
     *total_supply = new_total_supply;
     Ok(true)
 }
