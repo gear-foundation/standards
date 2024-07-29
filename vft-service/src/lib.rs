@@ -11,8 +11,8 @@ static mut STORAGE: Option<Storage> = None;
 
 #[derive(Debug, Default)]
 pub struct Storage {
-    balances: HashMap<ActorId, NonZeroU256>,
-    allowances: HashMap<(ActorId, ActorId), NonZeroU256>,
+    balances: HashMap<ActorId, U256>,
+    allowances: HashMap<(ActorId, ActorId), U256>,
     meta: Metadata,
     total_supply: U256,
 }
@@ -24,7 +24,7 @@ impl Storage {
     pub fn get() -> &'static Self {
         unsafe { STORAGE.as_ref().expect("Storage is not initialized") }
     }
-    pub fn balances() -> &'static mut HashMap<ActorId, NonZeroU256> {
+    pub fn balances() -> &'static mut HashMap<ActorId, U256> {
         let storage = unsafe { STORAGE.as_mut().expect("Storage is not initialized") };
         &mut storage.balances
     }

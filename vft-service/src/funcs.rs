@@ -5,7 +5,6 @@ pub fn allowance(allowances: &AllowancesMap, owner: ActorId, spender: ActorId) -
     allowances
         .get(&(owner, spender))
         .cloned()
-        .map(Into::into)
         .unwrap_or_default()
 }
 
@@ -15,26 +14,26 @@ pub fn approve(
     spender: ActorId,
     value: U256,
 ) -> bool {
+
     if owner == spender {
         return false;
     }
 
     let key = (owner, spender);
 
-    let Some(non_zero_value) = NonZeroU256::new(value) else {
+    if value.is_zero() {
         return allowances.remove(&key).is_some();
-    };
+    }
+    
+    let prev = allowances.insert(key, value);
 
-    let prev = allowances.insert(key, non_zero_value);
-
-    prev.map(|v| v != non_zero_value).unwrap_or(true)
+    prev.map(|v| v != value).unwrap_or(true)
 }
 
 pub fn balance_of(balances: &BalancesMap, owner: ActorId) -> U256 {
     balances
         .get(&owner)
         .cloned()
-        .map(Into::into)
         .unwrap_or_default()
 }
 
@@ -56,17 +55,14 @@ pub fn transfer(
         .checked_add(value)
         .ok_or(Error::NumericOverflow)?;
 
-    let Some(non_zero_new_to) = NonZeroU256::new(new_to) else {
-        unreachable!("Infallible since fn is noop on zero value; qed");
-    };
 
-    if let Some(non_zero_new_from) = NonZeroU256::new(new_from) {
-        balances.insert(from, non_zero_new_from);
+    if !new_from.is_zero() {
+        balances.insert(from, new_from);
     } else {
         balances.remove(&from);
     }
-
-    balances.insert(to, non_zero_new_to);
+   
+    balances.insert(to, new_to);
 
     Ok(true)
 }
@@ -96,8 +92,8 @@ pub fn transfer_from(
 
     let key = (from, spender);
 
-    if let Some(non_zero_new_allowance) = NonZeroU256::new(new_allowance) {
-        allowances.insert(key, non_zero_new_allowance);
+    if !new_allowance.is_zero() {
+        allowances.insert(key, new_allowance);
     } else {
         allowances.remove(&key);
     }
@@ -605,14 +601,14 @@ mod tests {
         ) -> AllowancesMap {
             content
                 .into_iter()
-                .map(|(k1, k2, v)| ((k1, k2), NonZeroU256::new(v).unwrap()))
+                .map(|(k1, k2, v)| ((k1, k2), v))
                 .collect()
         }
 
         pub fn balances_map<const N: usize>(content: [(ActorId, U256); N]) -> BalancesMap {
             content
                 .into_iter()
-                .map(|(k, v)| (k, NonZeroU256::new(v).unwrap()))
+                .map(|(k, v)| (k, v))
                 .collect()
         }
 
