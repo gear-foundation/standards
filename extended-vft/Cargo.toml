@@ -17,9 +17,9 @@ gclient = "1.4.2"
 gear-core = "1.4.2"
 gwasm-builder = { package = "gear-wasm-builder", version = "1.4.2" }
 parity-scale-codec = { version = "3.6", default-features = false }
-sails-idl-gen = { git = "https://github.com/gear-tech/sails" }
-sails-client-gen = { git = "https://github.com/gear-tech/sails" }
-sails-rs = { git = "https://github.com/gear-tech/sails" }
+sails-idl-gen = "0.2.0"
+sails-client-gen = "0.2.0"
+sails-rs = "0.2.0"
 scale-info = { version = "2.10", default-features = false }
 primitive-types = { version = "*", default-features = false }
 derive-more = { version = "*", default-features = false, features = ["display"] }
@@ -31,4 +31,5 @@ syn = "2.0"
 thiserror = "1.0"
 tokio = "1.36"
 trybuild = "1"
-vft-service = { git = "https://github.com/gear-foundation/standards" }
+vft-service = { path = "../vft-service" }
+#vft-service = { git = "https://github.com/gear-foundation/standards" }

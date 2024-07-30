@@ -5082,7 +5082,8 @@ checksum = "f3cb5ba0dc43242ce17de99c180e96db90b235b8a9fdc9543c96d2209116bd9f"
 [[package]]
 name = "sails-client-gen"
 version = "0.2.0"
-source = "git+https://github.com/gear-tech/sails#0de2c9e1b5c2d309d7e4495897c38870513819b3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f7da476ae2f9a81cd82cbf979b3a3398551961506597d821e8af884eb6d49435"
 dependencies = [
  "anyhow",
  "convert_case 0.6.0",
@@ -5094,7 +5095,8 @@ dependencies = [
 [[package]]
 name = "sails-idl-gen"
 version = "0.2.0"
-source = "git+https://github.com/gear-tech/sails#0de2c9e1b5c2d309d7e4495897c38870513819b3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6fe13bf8f5885aadabef526cdfac0c276755b94f719537f5fce6a5a935209e3"
 dependencies = [
  "convert_case 0.6.0",
  "handlebars",
@@ -5108,7 +5110,8 @@ dependencies = [
 [[package]]
 name = "sails-idl-parser"
 version = "0.2.0"
-source = "git+https://github.com/gear-tech/sails#0de2c9e1b5c2d309d7e4495897c38870513819b3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "896e5e36452b04f6e3e5161e5cc8c82adecce661c5e64dd6c9972d351c931287"
 dependencies = [
  "lalrpop",
  "lalrpop-util",
@@ -5119,7 +5122,8 @@ dependencies = [
 [[package]]
 name = "sails-macros"
 version = "0.2.0"
-source = "git+https://github.com/gear-tech/sails#0de2c9e1b5c2d309d7e4495897c38870513819b3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5725992518219afbd9b98f271e1ae54beaa0cce1ccd48ab83d2b07e4da2982e9"
 dependencies = [
  "proc-macro-error",
  "sails-macros-core",
@@ -5128,7 +5132,8 @@ dependencies = [
 [[package]]
 name = "sails-macros-core"
 version = "0.2.0"
-source = "git+https://github.com/gear-tech/sails#0de2c9e1b5c2d309d7e4495897c38870513819b3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "13980a8f9d176830f68ea1a9f920eaddcce93eda5b12f1e810fe55291e93df08"
 dependencies = [
  "const_format",
  "convert_case 0.6.0",
@@ -5142,7 +5147,8 @@ dependencies = [
 [[package]]
 name = "sails-rs"
 version = "0.2.0"
-source = "git+https://github.com/gear-tech/sails#0de2c9e1b5c2d309d7e4495897c38870513819b3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b82aa6ed82e7b3884cd9274757d2c2a2c64ed96f59fcd27c684e4ca5b62bfc93"
 dependencies = [
  "futures",
  "gclient",
@@ -7024,7 +7030,6 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "vft-service"
 version = "0.1.0"
-source = "git+https://github.com/gear-foundation/standards#d705a98c1529420e158289bcdff9d1492967e22f"
 dependencies = [
  "gstd",
  "log",
