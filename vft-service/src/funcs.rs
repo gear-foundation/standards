@@ -14,7 +14,6 @@ pub fn approve(
     spender: ActorId,
     value: U256,
 ) -> bool {
-
     if owner == spender {
         return false;
     }
@@ -24,17 +23,14 @@ pub fn approve(
     if value.is_zero() {
         return allowances.remove(&key).is_some();
     }
-    
+
     let prev = allowances.insert(key, value);
 
     prev.map(|v| v != value).unwrap_or(true)
 }
 
 pub fn balance_of(balances: &BalancesMap, owner: ActorId) -> U256 {
-    balances
-        .get(&owner)
-        .cloned()
-        .unwrap_or_default()
+    balances.get(&owner).cloned().unwrap_or_default()
 }
 
 pub fn transfer(
@@ -55,13 +51,12 @@ pub fn transfer(
         .checked_add(value)
         .ok_or(Error::NumericOverflow)?;
 
-
     if !new_from.is_zero() {
         balances.insert(from, new_from);
     } else {
         balances.remove(&from);
     }
-   
+
     balances.insert(to, new_to);
 
     Ok(true)
@@ -606,10 +601,7 @@ mod tests {
         }
 
         pub fn balances_map<const N: usize>(content: [(ActorId, U256); N]) -> BalancesMap {
-            content
-                .into_iter()
-                .map(|(k, v)| (k, v))
-                .collect()
+            content.into_iter().map(|(k, v)| (k, v)).collect()
         }
 
         pub fn alice() -> ActorId {

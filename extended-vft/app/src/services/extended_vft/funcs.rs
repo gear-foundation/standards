@@ -48,7 +48,7 @@ pub fn burn(
     } else {
         balances.remove(&from);
     }
-    
+
     *total_supply = new_total_supply;
     Ok(true)
 }
