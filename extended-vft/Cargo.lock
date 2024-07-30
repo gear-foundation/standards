@@ -7030,6 +7030,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "vft-service"
 version = "0.1.0"
+source = "git+https://github.com/gear-foundation/standards#e42d421f0418a3b6903119c1e160e1e1d7964ab8"
 dependencies = [
  "gstd",
  "log",
