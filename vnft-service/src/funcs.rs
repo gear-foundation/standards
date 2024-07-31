@@ -107,10 +107,7 @@ fn update_owner(
     token_id: TokenId,
 ) {
     owner_by_id.insert(token_id, to);
-    tokens_for_owner
-        .entry(to)
-        .or_default()
-        .insert(token_id);
+    tokens_for_owner.entry(to).or_default().insert(token_id);
 
     if let Some(tokens) = tokens_for_owner.get_mut(&from) {
         tokens.remove(&token_id);
