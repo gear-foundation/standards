@@ -1,5 +1,8 @@
 use core::fmt::Debug;
-use gstd::{collections::{HashMap, HashSet}, ext, format, Decode, Encode, TypeInfo};
+use gstd::{
+    collections::{HashMap, HashSet},
+    ext, format, Decode, Encode, TypeInfo,
+};
 use sails_rs::prelude::*;
 pub type TokenId = U256;
 pub type TokenURI = String;
@@ -14,7 +17,7 @@ pub enum Error {
     SelfDealing,
     TokenDoesNotExist,
     DeniedAccess,
-    NoTokens
+    NoTokens,
 }
 
 pub fn panicking<T, E: Debug, F: FnOnce() -> Result<T, E>>(f: F) -> T {

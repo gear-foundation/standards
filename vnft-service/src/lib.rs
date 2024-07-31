@@ -1,9 +1,12 @@
 #![no_std]
 #![allow(clippy::new_without_default)]
-use core::fmt::Debug;
-use gstd::{collections::{HashMap, HashSet}, msg, Decode, Encode, String, TypeInfo};
-use sails_rs::{gstd::service, prelude::*};
 use crate::utils::*;
+use core::fmt::Debug;
+use gstd::{
+    collections::{HashMap, HashSet},
+    msg, Decode, Encode, String, TypeInfo,
+};
+use sails_rs::{gstd::service, prelude::*};
 pub mod funcs;
 pub mod utils;
 
@@ -11,15 +14,13 @@ static mut STORAGE: Option<Storage> = None;
 
 #[derive(Debug, Default)]
 pub struct Storage {
-    name: String, 
+    name: String,
     symbol: String,
     owner_by_id: OwnerByIdMap,
     tokens_for_owner: TokensForOwnerMap,
     token_uri_by_id: TokenUriByIdMap,
     token_approvals: ApprovalsMap,
 }
-
-
 
 impl Storage {
     pub fn get_mut() -> &'static mut Self {
@@ -85,20 +86,27 @@ impl Service {
     pub fn approve(&mut self, approved: ActorId, token_id: TokenId) -> Event {
         let source = msg::source();
         let owner = funcs::owner_of(&Storage::get().owner_by_id, token_id);
-        utils::panicking(move || funcs::approve(Storage::token_approvals(), source, owner, approved, token_id));
+        utils::panicking(move || {
+            funcs::approve(
+                Storage::token_approvals(),
+                source,
+                owner,
+                approved,
+                token_id,
+            )
+        });
 
         Event::Approval {
             owner,
             approved,
             token_id,
         }
-        
     }
 
     pub fn transfer(&mut self, to: ActorId, token_id: TokenId) -> Event {
         let source = msg::source();
         utils::panicking(move || {
-            funcs::transfer_from(
+            funcs::transfer(
                 Storage::token_approvals(),
                 Storage::owner_by_id(),
                 Storage::tokens_for_owner(),
@@ -122,7 +130,11 @@ impl Service {
         funcs::owner_of(&Storage::get().owner_by_id, token_id)
     }
     pub fn get_approved(&self, token_id: TokenId) -> ActorId {
-        Storage::get().token_approvals.get(&token_id).copied().unwrap_or_else(ActorId::zero)
+        Storage::get()
+            .token_approvals
+            .get(&token_id)
+            .copied()
+            .unwrap_or_else(ActorId::zero)
     }
     pub fn name(&self) -> &'static str {
         let storage = Storage::get();
@@ -133,6 +145,10 @@ impl Service {
         &storage.symbol
     }
     pub fn token_uri(&self, token_id: TokenId) -> &'static str {
-        Storage::get().token_uri_by_id.get(&token_id).map(String::as_str).unwrap_or("")
+        Storage::get()
+            .token_uri_by_id
+            .get(&token_id)
+            .map(String::as_str)
+            .unwrap_or("")
     }
 }
