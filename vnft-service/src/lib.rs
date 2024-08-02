@@ -65,7 +65,7 @@ pub enum Event {
 pub struct Service();
 
 impl Service {
-    pub fn seed(name: String, symbol: String) -> Self {
+    pub fn init(name: String, symbol: String) -> Self {
         unsafe {
             STORAGE = Some(Storage {
                 name,
