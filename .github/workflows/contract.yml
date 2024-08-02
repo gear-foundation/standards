@@ -33,6 +33,33 @@ jobs:
 
       - name: Run Clippy
         run: cargo clippy -r --manifest-path vft-service/Cargo.toml -- -D warnings
+  
+  vnft-service:
+      name: VnftService
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          override: true
+
+      - name: Install Clippy
+        run: rustup component add clippy
+
+      - name: Install Rustfmt
+        run: rustup component add rustfmt
+
+      - name: Check formatting
+        run: cargo fmt --all --manifest-path vnft-service/Cargo.toml -- --check
+
+      - name: Run Clippy
+        run: cargo clippy -r --manifest-path vnft-service/Cargo.toml -- -D warnings
 
   extend-vft:
     needs: [vft-service]

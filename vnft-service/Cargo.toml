@@ -1,0 +1,16 @@
+[package]
+name = "vnft-service"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0"
+
+[dependencies]
+gstd = "1.4.2"
+log = "*"
+sails-rs = "0.2.0"
+parity-scale-codec = { version = "3.6", default-features = false }
+scale-info = { version = "2.10", default-features = false }
+
+
+[dev-dependencies]
+env_logger = "*"
