@@ -83,7 +83,7 @@ impl Service {
         Self()
     }
 
-    pub fn approve(&mut self, approved: ActorId, token_id: TokenId) -> Event {
+    pub fn approve(&mut self, approved: ActorId, token_id: TokenId) {
         let source = msg::source();
         let owner = funcs::owner_of(&Storage::get().owner_by_id, token_id);
         utils::panicking(move || {
@@ -95,15 +95,14 @@ impl Service {
                 token_id,
             )
         });
-
-        Event::Approval {
+        let _ = self.notify_on(Event::Approval {
             owner,
             approved,
             token_id,
-        }
+        });
     }
 
-    pub fn transfer(&mut self, to: ActorId, token_id: TokenId) -> Event {
+    pub fn transfer(&mut self, to: ActorId, token_id: TokenId) {
         let source = msg::source();
         utils::panicking(move || {
             funcs::transfer(
@@ -116,11 +115,11 @@ impl Service {
             )
         });
 
-        Event::Transfer {
+        let _ = self.notify_on(Event::Transfer {
             from: source,
             to,
             token_id,
-        }
+        });
     }
 
     pub fn balance_of(&self, owner: ActorId) -> U256 {
