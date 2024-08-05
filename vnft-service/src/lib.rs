@@ -18,7 +18,6 @@ pub struct Storage {
     symbol: String,
     owner_by_id: OwnerByIdMap,
     tokens_for_owner: TokensForOwnerMap,
-    token_uri_by_id: TokenUriByIdMap,
     token_approvals: ApprovalsMap,
 }
 
@@ -36,10 +35,6 @@ impl Storage {
     pub fn owner_by_id() -> &'static mut HashMap<TokenId, ActorId> {
         let storage = unsafe { STORAGE.as_mut().expect("Storage is not initialized") };
         &mut storage.owner_by_id
-    }
-    pub fn token_uri_by_id() -> &'static mut HashMap<TokenId, TokenURI> {
-        let storage = unsafe { STORAGE.as_mut().expect("Storage is not initialized") };
-        &mut storage.token_uri_by_id
     }
     pub fn token_approvals() -> &'static mut HashMap<TokenId, ActorId> {
         let storage = unsafe { STORAGE.as_mut().expect("Storage is not initialized") };
@@ -122,6 +117,23 @@ impl Service {
         });
     }
 
+    pub fn transfer_from(&mut self, from: ActorId, to: ActorId, token_id: TokenId) {
+        let source = msg::source();
+        utils::panicking(move || {
+            funcs::transfer_from(
+                Storage::token_approvals(),
+                Storage::owner_by_id(),
+                Storage::tokens_for_owner(),
+                source,
+                from,
+                to,
+                token_id,
+            )
+        });
+
+        let _ = self.notify_on(Event::Transfer { from, to, token_id });
+    }
+
     pub fn balance_of(&self, owner: ActorId) -> U256 {
         funcs::balance_of(&Storage::get().tokens_for_owner, owner)
     }
@@ -142,12 +154,5 @@ impl Service {
     pub fn symbol(&self) -> &'static str {
         let storage = Storage::get();
         &storage.symbol
-    }
-    pub fn token_uri(&self, token_id: TokenId) -> &'static str {
-        Storage::get()
-            .token_uri_by_id
-            .get(&token_id)
-            .map(String::as_str)
-            .unwrap_or("")
     }
 }

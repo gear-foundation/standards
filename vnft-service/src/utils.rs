@@ -5,11 +5,9 @@ use gstd::{
 };
 use sails_rs::prelude::*;
 pub type TokenId = U256;
-pub type TokenURI = String;
 pub type ApprovalsMap = HashMap<TokenId, ActorId>;
 pub type OwnerByIdMap = HashMap<TokenId, ActorId>;
 pub type TokensForOwnerMap = HashMap<ActorId, HashSet<TokenId>>;
-pub type TokenUriByIdMap = HashMap<TokenId, TokenURI>;
 pub type Result<T, E = Error> = core::result::Result<T, E>;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, TypeInfo)]
