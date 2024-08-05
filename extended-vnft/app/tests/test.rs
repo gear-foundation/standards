@@ -1,6 +1,6 @@
-use extended_vft_wasm::{
-    traits::{ExtendedVftFactory, Vft},
-    ExtendedVftFactory as Factory, Vft as VftClient,
+use extended_vnft_wasm::{
+    traits::{ExtendedVnftFactory, Vnft},
+    ExtendedVnftFactory as Factory, TokenMetadata, Vnft as VftClient,
 };
 use sails_rs::calls::*;
 use sails_rs::gtest::calls::*;
@@ -11,108 +11,106 @@ async fn test_basic_function() {
     program_space.system().init_logger();
     let code_id = program_space
         .system()
-        .submit_code_file("../target/wasm32-unknown-unknown/release/extended_vft_wasm.opt.wasm");
+        .submit_code_file("../target/wasm32-unknown-unknown/release/extended_vnft_wasm.opt.wasm");
 
-    let extended_vft_factory = Factory::new(program_space.clone());
-    let extended_vft_id = extended_vft_factory
-        .new("name".to_string(), "symbol".to_string(), 10)
+    let extended_vnft_factory = Factory::new(program_space.clone());
+    let extended_vnft_id = extended_vnft_factory
+        .new(
+            "collection_name".to_string(),
+            "collection_symbol".to_string(),
+        )
         .send_recv(code_id, "123")
         .await
         .unwrap();
 
     let mut client = VftClient::new(program_space);
     // mint
+    let metadata = TokenMetadata {
+        name: "token_name".to_string(),
+        description: "token_description".to_string(),
+        media: "token_media".to_string(),
+        reference: "token_reference".to_string(),
+    };
     client
-        .mint(100.into(), 1_000.into())
-        .send_recv(extended_vft_id)
+        .mint(100.into(), metadata)
+        .send_recv(extended_vnft_id)
         .await
         .unwrap();
     // check balance
     let balance = client
         .balance_of(100.into())
-        .recv(extended_vft_id)
+        .recv(extended_vnft_id)
         .await
         .unwrap();
-    assert_eq!(balance, 1_000.into());
-
-    // burn
-    client
-        .burn(100.into(), 100.into())
-        .send_recv(extended_vft_id)
+    assert_eq!(balance, 1.into());
+    // check token_id
+    let token_id = client.token_id().recv(extended_vnft_id).await.unwrap();
+    assert_eq!(token_id, 1.into());
+    // check owner
+    let actor_id = client
+        .owner_of(0.into())
+        .recv(extended_vnft_id)
         .await
         .unwrap();
-    // check balance
-    let balance = client
-        .balance_of(100.into())
-        .recv(extended_vft_id)
-        .await
-        .unwrap();
-    assert_eq!(balance, 900.into());
+    assert_eq!(actor_id, 100.into());
 
     // transfer
     client
-        .transfer(101.into(), 100.into())
-        .send_recv(extended_vft_id)
+        .transfer(101.into(), 0.into())
+        .send_recv(extended_vnft_id)
         .await
         .unwrap();
-    // check balance
-    let balance = client
-        .balance_of(100.into())
-        .recv(extended_vft_id)
+    // check owner
+    let actor_id = client
+        .owner_of(0.into())
+        .recv(extended_vnft_id)
         .await
         .unwrap();
-    assert_eq!(balance, 800.into());
-    let balance = client
-        .balance_of(101.into())
-        .recv(extended_vft_id)
-        .await
-        .unwrap();
-    assert_eq!(balance, 100.into());
+    assert_eq!(actor_id, 101.into());
 
     // approve
     client
-        .approve(102.into(), 100.into())
-        .send_recv(extended_vft_id)
+        .approve(102.into(), 0.into())
+        .with_args(GTestArgs::new(101.into()))
+        .send_recv(extended_vnft_id)
         .await
         .unwrap();
-    // check balance
-    let balance = client
-        .balance_of(100.into())
-        .recv(extended_vft_id)
-        .await
-        .unwrap();
-    assert_eq!(balance, 800.into());
-    let balance = client
-        .balance_of(102.into())
-        .recv(extended_vft_id)
-        .await
-        .unwrap();
-    assert_eq!(balance, 0.into());
+
     // transfer from
     client
-        .transfer_from(100.into(), 101.into(), 100.into())
-        .send_recv(extended_vft_id)
+        .transfer_from(101.into(), 100.into(), 0.into())
+        .with_args(GTestArgs::new(102.into()))
+        .send_recv(extended_vnft_id)
+        .await
+        .unwrap();
+    // check owner
+    let actor_id = client
+        .owner_of(0.into())
+        .recv(extended_vnft_id)
+        .await
+        .unwrap();
+    assert_eq!(actor_id, 100.into());
+
+    // burn
+    client
+        .burn(100.into(), 0.into())
+        .send_recv(extended_vnft_id)
         .await
         .unwrap();
     // check balance
     let balance = client
         .balance_of(100.into())
-        .recv(extended_vft_id)
-        .await
-        .unwrap();
-    assert_eq!(balance, 700.into());
-    let balance = client
-        .balance_of(101.into())
-        .recv(extended_vft_id)
-        .await
-        .unwrap();
-    assert_eq!(balance, 200.into());
-    let balance = client
-        .balance_of(102.into())
-        .recv(extended_vft_id)
+        .recv(extended_vnft_id)
         .await
         .unwrap();
     assert_eq!(balance, 0.into());
+    // check owner
+    let actor_id = client
+        .owner_of(0.into())
+        .recv(extended_vnft_id)
+        .await
+        .unwrap();
+    assert_eq!(actor_id, 0.into());
 }
 
 #[tokio::test]
@@ -123,18 +121,24 @@ async fn test_grant_role() {
 
     let code_id = program_space
         .system()
-        .submit_code_file("../target/wasm32-unknown-unknown/release/extended_vft_wasm.opt.wasm");
+        .submit_code_file("../target/wasm32-unknown-unknown/release/extended_vnft_wasm.opt.wasm");
 
     let extended_vft_factory = Factory::new(program_space.clone());
     let extended_vft_id = extended_vft_factory
-        .new("name".to_string(), "symbol".to_string(), 10)
+        .new("name".to_string(), "symbol".to_string())
         .send_recv(code_id, "123")
         .await
         .unwrap();
 
     // try minter role
+    let metadata = TokenMetadata {
+        name: "token_name".to_string(),
+        description: "token_description".to_string(),
+        media: "token_media".to_string(),
+        reference: "token_reference".to_string(),
+    };
     let res = client
-        .mint(101.into(), 1_000.into())
+        .mint(101.into(), metadata)
         .with_args(GTestArgs::new(101.into()))
         .send_recv(extended_vft_id)
         .await;
@@ -147,28 +151,36 @@ async fn test_grant_role() {
         .unwrap();
     let minters = client.minters().recv(extended_vft_id).await.unwrap();
     assert_eq!(minters, vec![100.into(), 101.into()]);
-    let res = client
-        .mint(101.into(), 1_000.into())
+    client
+        .mint(
+            101.into(),
+            TokenMetadata {
+                name: "token_name".to_string(),
+                description: "token_description".to_string(),
+                media: "token_media".to_string(),
+                reference: "token_reference".to_string(),
+            },
+        )
         .with_args(GTestArgs::new(101.into()))
         .send_recv(extended_vft_id)
         .await
         .unwrap();
-    assert!(res);
+
     let balance = client
         .balance_of(101.into())
         .recv(extended_vft_id)
         .await
         .unwrap();
-    assert_eq!(balance, 1_000.into());
+    assert_eq!(balance, 1.into());
 
     // try burner role
     let res = client
-        .burn(101.into(), 1_000.into())
+        .burn(101.into(), 0.into())
         .with_args(GTestArgs::new(101.into()))
         .send_recv(extended_vft_id)
         .await;
     assert!(res.is_err());
-    // grant burner role
+    // grant burn role
     client
         .grant_burner_role(101.into())
         .send_recv(extended_vft_id)
@@ -176,13 +188,13 @@ async fn test_grant_role() {
         .unwrap();
     let burners = client.burners().recv(extended_vft_id).await.unwrap();
     assert_eq!(burners, vec![100.into(), 101.into()]);
-    let res = client
-        .burn(101.into(), 1_000.into())
+    client
+        .burn(101.into(), 0.into())
         .with_args(GTestArgs::new(101.into()))
         .send_recv(extended_vft_id)
         .await
         .unwrap();
-    assert!(res);
+
     let balance = client
         .balance_of(101.into())
         .recv(extended_vft_id)

@@ -1,0 +1,19 @@
+[package]
+name = "extended_vnft_wasm"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+extended-vnft-app = { path = "../app" }
+sails-rs.workspace = true
+
+[build-dependencies]
+gwasm-builder.workspace = true
+sails-idl-gen.workspace = true
+sails-client-gen.workspace = true
+extended-vnft-app = { path = "../app" }
+
+[lib]
+crate-type = ["rlib"]
+name = "extended_vnft_wasm"
