@@ -9,6 +9,7 @@ extended-vft-app = { path = "../app" }
 sails-rs.workspace = true
 
 [build-dependencies]
+sails-rs = { workspace = true, features = ["wasm-builder"] }
 gwasm-builder.workspace = true
 sails-idl-gen.workspace = true
 sails-client-gen.workspace = true
