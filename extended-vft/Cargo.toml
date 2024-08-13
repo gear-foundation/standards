@@ -17,9 +17,9 @@ gclient = "1.4.2"
 gear-core = "1.4.2"
 gwasm-builder = { package = "gear-wasm-builder", version = "1.4.2" }
 parity-scale-codec = { version = "3.6", default-features = false }
-sails-idl-gen = "0.2.0"
-sails-client-gen = "0.2.0"
-sails-rs = "0.2.0"
+sails-idl-gen = "=0.2.0"
+sails-client-gen = "=0.2.0"
+sails-rs = "=0.2.0"
 scale-info = { version = "2.10", default-features = false }
 primitive-types = { version = "*", default-features = false }
 derive-more = { version = "*", default-features = false, features = ["display"] }
