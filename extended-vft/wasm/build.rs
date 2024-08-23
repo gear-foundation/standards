@@ -1,6 +1,6 @@
 use extended_vft_app::Program;
-use std::{env, path::PathBuf};
 use sails_client_gen::ClientGenerator;
+use std::{env, path::PathBuf};
 
 fn main() {
     sails_rs::build_wasm();
@@ -14,4 +14,3 @@ fn main() {
         .generate_to(PathBuf::from(env::var("OUT_DIR").unwrap()).join("extended_vft_client.rs"))
         .unwrap();
 }
-

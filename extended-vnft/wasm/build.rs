@@ -1,6 +1,6 @@
 use extended_vnft_app::Program;
-use std::{env, path::PathBuf};
 use sails_client_gen::ClientGenerator;
+use std::{env, path::PathBuf};
 
 fn main() {
     sails_rs::build_wasm();
