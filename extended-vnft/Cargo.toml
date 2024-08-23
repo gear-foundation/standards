@@ -31,5 +31,4 @@ syn = "2.0"
 thiserror = "1.0"
 tokio = "1.36"
 trybuild = "1"
-vnft-service = { path = "../vnft-service" }
-#vnft-service = { git = "https://github.com/gear-foundation/standards" }
+vnft-service = { git = "https://github.com/gear-foundation/standards" }
