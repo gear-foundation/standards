@@ -1880,7 +1880,6 @@ name = "extended_vft_wasm"
 version = "0.1.0"
 dependencies = [
  "extended-vft-app",
- "gear-wasm-builder",
  "sails-client-gen",
  "sails-idl-gen",
  "sails-rs",
@@ -5137,6 +5136,7 @@ dependencies = [
  "futures",
  "gclient",
  "gear-core-errors",
+ "gear-wasm-builder",
  "gprimitives",
  "gstd",
  "gtest",
