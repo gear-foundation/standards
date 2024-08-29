@@ -90,11 +90,12 @@ impl Service {
                 token_id,
             )
         });
-        let _ = self.notify_on(Event::Approval {
+        self.notify_on(Event::Approval {
             owner,
             approved,
             token_id,
-        });
+        })
+        .expect("Notification Error");
     }
 
     pub fn transfer(&mut self, to: ActorId, token_id: TokenId) {
@@ -110,11 +111,12 @@ impl Service {
             )
         });
 
-        let _ = self.notify_on(Event::Transfer {
+        self.notify_on(Event::Transfer {
             from: source,
             to,
             token_id,
-        });
+        })
+        .expect("Notification Error");
     }
 
     pub fn transfer_from(&mut self, from: ActorId, to: ActorId, token_id: TokenId) {
@@ -131,7 +133,8 @@ impl Service {
             )
         });
 
-        let _ = self.notify_on(Event::Transfer { from, to, token_id });
+        self.notify_on(Event::Transfer { from, to, token_id })
+            .expect("Notification Error");
     }
 
     pub fn balance_of(&self, owner: ActorId) -> U256 {

@@ -70,7 +70,8 @@ impl ExtendedService {
             funcs::mint(Storage::balances(), Storage::total_supply(), to, value)
         });
         if mutated {
-            let _ = self.notify_on(Event::Minted { to, value });
+            self.notify_on(Event::Minted { to, value })
+                .expect("Notification Error");
         }
         mutated
     }
@@ -84,7 +85,8 @@ impl ExtendedService {
             funcs::burn(Storage::balances(), Storage::total_supply(), from, value)
         });
         if mutated {
-            let _ = self.notify_on(Event::Burned { from, value });
+            self.notify_on(Event::Burned { from, value })
+                .expect("Notification Error");
         }
         mutated
     }
