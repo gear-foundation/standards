@@ -97,7 +97,8 @@ impl ExtendedService {
                 token_metadata.clone(),
             )
         });
-        let _ = self.notify_on(Event::Minted { to, token_metadata });
+        self.notify_on(Event::Minted { to, token_metadata })
+            .expect("Notification Error");
     }
 
     pub fn burn(&mut self, from: ActorId, token_id: TokenId) {
@@ -113,7 +114,8 @@ impl ExtendedService {
                 token_id,
             )
         });
-        let _ = self.notify_on(Event::Burned { from, token_id });
+        self.notify_on(Event::Burned { from, token_id })
+            .expect("Notification Error");
     }
 
     pub fn grant_admin_role(&mut self, to: ActorId) {
