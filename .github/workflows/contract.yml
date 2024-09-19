@@ -95,7 +95,7 @@ jobs:
         curl -L https://get.gear.rs/gear-v1.5.0-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C extended-vft/target/tmp
 
     - name: Run tests
-      run: cargo test --manifest-path extended-vft/Cargo.toml
+      run: cargo test -r --manifest-path extended-vft/Cargo.toml -- --ignored
       
   extend-vnft:
     needs: [vnft-service]
@@ -131,6 +131,6 @@ jobs:
         curl -L https://get.gear.rs/gear-v1.5.0-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C extended-vnft/target/tmp
 
     - name: Run tests
-      run: cargo test --manifest-path extended-vnft/Cargo.toml
+      run: cargo test -r --manifest-path extended-vnft/Cargo.toml -- --ignored
 
   
