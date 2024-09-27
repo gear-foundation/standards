@@ -5,14 +5,14 @@ edition = "2021"
 license = "GPL-3.0"
 
 [dependencies]
-gstd = "1.5.0"
+gstd = "=1.5.0"
 log = "*"
-sails-rs = "=0.3.0"
+sails-rs = "=0.5.0"
 parity-scale-codec = { version = "3.6", default-features = false }
 scale-info = { version = "2.10", default-features = false }
 
 [dev-dependencies]
 env_logger = "*"
-gtest = "1.5.0"
-gear-core = "1.5.0"
+gtest = "=1.5.0"
+gear-core = "=1.5.0"
 
