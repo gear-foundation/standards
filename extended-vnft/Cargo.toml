@@ -11,15 +11,15 @@ edition = "2021"
 license = "GPL-3.0"
 
 [workspace.dependencies]
-gstd = "1.5.0"
-gtest = "1.5.0"
-gclient = "1.5.0"
-gear-core = "1.5.0"
-gwasm-builder = { package = "gear-wasm-builder", version = "1.5.0" }
+gstd = "=1.5.0"
+gtest = "=1.5.0"
+gclient = "=1.5.0"
+gear-core = "=1.5.0"
+gwasm-builder = { package = "gear-wasm-builder", version = "=1.5.0" }
 parity-scale-codec = { version = "3.6", default-features = false }
-sails-idl-gen = "=0.3.0"
-sails-client-gen = "=0.3.0"
-sails-rs = "=0.3.0"
+sails-idl-gen = "=0.5.0"
+sails-client-gen = "=0.5.0"
+sails-rs = "=0.5.0"
 scale-info = { version = "2.10", default-features = false }
 primitive-types = { version = "*", default-features = false }
 derive-more = { version = "*", default-features = false, features = ["display"] }
