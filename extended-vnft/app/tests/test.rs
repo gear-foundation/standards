@@ -3,12 +3,20 @@ use extended_vnft_wasm::{
     ExtendedVnftFactory as Factory, TokenMetadata, Vnft as VftClient,
 };
 use sails_rs::calls::*;
-use sails_rs::gtest::calls::*;
+use sails_rs::gtest::{calls::*, System};
+
+pub const ADMIN_ID: u64 = 10;
+pub const USER_ID: [u64; 2] = [11, 12];
 
 #[tokio::test]
 async fn test_basic_function() {
-    let program_space = GTestRemoting::new(100.into());
-    program_space.system().init_logger();
+    let system = System::new();
+    system.init_logger();
+    system.mint_to(ADMIN_ID, 100_000_000_000_000);
+    system.mint_to(USER_ID[0], 100_000_000_000_000);
+    system.mint_to(USER_ID[1], 100_000_000_000_000);
+    let program_space = GTestRemoting::new(system, ADMIN_ID.into());
+
     let code_id = program_space
         .system()
         .submit_code_file("../target/wasm32-unknown-unknown/release/extended_vnft_wasm.opt.wasm");
@@ -32,13 +40,13 @@ async fn test_basic_function() {
         reference: "token_reference".to_string(),
     };
     client
-        .mint(100.into(), metadata)
+        .mint(ADMIN_ID.into(), metadata)
         .send_recv(extended_vnft_id)
         .await
         .unwrap();
     // check balance
     let balance = client
-        .balance_of(100.into())
+        .balance_of(ADMIN_ID.into())
         .recv(extended_vnft_id)
         .await
         .unwrap();
@@ -52,11 +60,11 @@ async fn test_basic_function() {
         .recv(extended_vnft_id)
         .await
         .unwrap();
-    assert_eq!(actor_id, 100.into());
+    assert_eq!(actor_id, ADMIN_ID.into());
 
     // transfer
     client
-        .transfer(101.into(), 0.into())
+        .transfer(USER_ID[0].into(), 0.into())
         .send_recv(extended_vnft_id)
         .await
         .unwrap();
@@ -66,20 +74,20 @@ async fn test_basic_function() {
         .recv(extended_vnft_id)
         .await
         .unwrap();
-    assert_eq!(actor_id, 101.into());
+    assert_eq!(actor_id, USER_ID[0].into());
 
     // approve
     client
-        .approve(102.into(), 0.into())
-        .with_args(GTestArgs::new(101.into()))
+        .approve(USER_ID[1].into(), 0.into())
+        .with_args(GTestArgs::new(USER_ID[0].into()))
         .send_recv(extended_vnft_id)
         .await
         .unwrap();
 
     // transfer from
     client
-        .transfer_from(101.into(), 100.into(), 0.into())
-        .with_args(GTestArgs::new(102.into()))
+        .transfer_from(USER_ID[0].into(), ADMIN_ID.into(), 0.into())
+        .with_args(GTestArgs::new(USER_ID[1].into()))
         .send_recv(extended_vnft_id)
         .await
         .unwrap();
@@ -89,17 +97,17 @@ async fn test_basic_function() {
         .recv(extended_vnft_id)
         .await
         .unwrap();
-    assert_eq!(actor_id, 100.into());
+    assert_eq!(actor_id, ADMIN_ID.into());
 
     // burn
     client
-        .burn(100.into(), 0.into())
+        .burn(ADMIN_ID.into(), 0.into())
         .send_recv(extended_vnft_id)
         .await
         .unwrap();
     // check balance
     let balance = client
-        .balance_of(100.into())
+        .balance_of(ADMIN_ID.into())
         .recv(extended_vnft_id)
         .await
         .unwrap();
@@ -115,8 +123,13 @@ async fn test_basic_function() {
 
 #[tokio::test]
 async fn test_grant_role() {
-    let program_space = GTestRemoting::new(100.into());
-    program_space.system().init_logger();
+    let system = System::new();
+    system.init_logger();
+    system.mint_to(ADMIN_ID, 100_000_000_000_000);
+    system.mint_to(USER_ID[0], 100_000_000_000_000);
+    system.mint_to(USER_ID[1], 100_000_000_000_000);
+    let program_space = GTestRemoting::new(system, ADMIN_ID.into());
+
     let mut client = VftClient::new(program_space.clone());
 
     let code_id = program_space
@@ -138,22 +151,23 @@ async fn test_grant_role() {
         reference: "token_reference".to_string(),
     };
     let res = client
-        .mint(101.into(), metadata)
-        .with_args(GTestArgs::new(101.into()))
+        .mint(USER_ID[0].into(), metadata)
+        .with_args(GTestArgs::new(USER_ID[0].into()))
         .send_recv(extended_vft_id)
         .await;
     assert!(res.is_err());
     // grant mint role
     client
-        .grant_minter_role(101.into())
+        .grant_minter_role(USER_ID[0].into())
         .send_recv(extended_vft_id)
         .await
         .unwrap();
     let minters = client.minters().recv(extended_vft_id).await.unwrap();
-    assert_eq!(minters, vec![100.into(), 101.into()]);
+    assert!(minters.contains(&ADMIN_ID.into()));
+    assert!(minters.contains(&USER_ID[0].into()));
     client
         .mint(
-            101.into(),
+            USER_ID[0].into(),
             TokenMetadata {
                 name: "token_name".to_string(),
                 description: "token_description".to_string(),
@@ -161,13 +175,13 @@ async fn test_grant_role() {
                 reference: "token_reference".to_string(),
             },
         )
-        .with_args(GTestArgs::new(101.into()))
+        .with_args(GTestArgs::new(USER_ID[0].into()))
         .send_recv(extended_vft_id)
         .await
         .unwrap();
 
     let balance = client
-        .balance_of(101.into())
+        .balance_of(USER_ID[0].into())
         .recv(extended_vft_id)
         .await
         .unwrap();
@@ -175,28 +189,29 @@ async fn test_grant_role() {
 
     // try burner role
     let res = client
-        .burn(101.into(), 0.into())
-        .with_args(GTestArgs::new(101.into()))
+        .burn(USER_ID[0].into(), 0.into())
+        .with_args(GTestArgs::new(USER_ID[0].into()))
         .send_recv(extended_vft_id)
         .await;
     assert!(res.is_err());
     // grant burn role
     client
-        .grant_burner_role(101.into())
+        .grant_burner_role(USER_ID[0].into())
         .send_recv(extended_vft_id)
         .await
         .unwrap();
     let burners = client.burners().recv(extended_vft_id).await.unwrap();
-    assert_eq!(burners, vec![100.into(), 101.into()]);
+    assert!(burners.contains(&ADMIN_ID.into()));
+    assert!(burners.contains(&USER_ID[0].into()));
     client
-        .burn(101.into(), 0.into())
-        .with_args(GTestArgs::new(101.into()))
+        .burn(USER_ID[0].into(), 0.into())
+        .with_args(GTestArgs::new(USER_ID[0].into()))
         .send_recv(extended_vft_id)
         .await
         .unwrap();
 
     let balance = client
-        .balance_of(101.into())
+        .balance_of(USER_ID[0].into())
         .recv(extended_vft_id)
         .await
         .unwrap();
@@ -204,33 +219,33 @@ async fn test_grant_role() {
 
     // grant admin role
     client
-        .grant_admin_role(101.into())
+        .grant_admin_role(USER_ID[0].into())
         .send_recv(extended_vft_id)
         .await
         .unwrap();
     let admins = client.admins().recv(extended_vft_id).await.unwrap();
-    assert_eq!(admins, vec![100.into(), 101.into()]);
-
+    assert!(admins.contains(&ADMIN_ID.into()));
+    assert!(admins.contains(&USER_ID[0].into()));
     // revoke roles
     client
-        .revoke_admin_role(101.into())
+        .revoke_admin_role(USER_ID[0].into())
         .send_recv(extended_vft_id)
         .await
         .unwrap();
     let admins = client.admins().recv(extended_vft_id).await.unwrap();
-    assert_eq!(admins, vec![100.into()]);
+    assert_eq!(admins, vec![ADMIN_ID.into()]);
     client
-        .revoke_minter_role(101.into())
+        .revoke_minter_role(USER_ID[0].into())
         .send_recv(extended_vft_id)
         .await
         .unwrap();
     let minters = client.minters().recv(extended_vft_id).await.unwrap();
-    assert_eq!(minters, vec![100.into()]);
+    assert_eq!(minters, vec![ADMIN_ID.into()]);
     client
-        .revoke_burner_role(101.into())
+        .revoke_burner_role(USER_ID[0].into())
         .send_recv(extended_vft_id)
         .await
         .unwrap();
     let burners = client.burners().recv(extended_vft_id).await.unwrap();
-    assert_eq!(burners, vec![100.into()]);
+    assert_eq!(burners, vec![ADMIN_ID.into()]);
 }

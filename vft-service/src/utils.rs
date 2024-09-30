@@ -1,6 +1,7 @@
 use core::fmt::Debug;
-use gstd::{collections::HashMap, ext, format, Decode, Encode, TypeInfo};
+use gstd::ext;
 use sails_rs::prelude::*;
+use sails_rs::{collections::HashMap, prelude::*};
 pub type AllowancesMap = HashMap<(ActorId, ActorId), U256>;
 pub type BalancesMap = HashMap<ActorId, U256>;
 pub type Result<T, E = Error> = core::result::Result<T, E>;

@@ -1,9 +1,8 @@
 use core::fmt::Debug;
-use gstd::{
-    collections::{HashMap, HashSet},
-    ext, format, Decode, Encode, TypeInfo,
-};
+use sails_rs::collections::{HashMap, HashSet};
+use gstd::ext;
 use sails_rs::prelude::*;
+
 pub type TokenId = U256;
 pub type ApprovalsMap = HashMap<TokenId, ActorId>;
 pub type OwnerByIdMap = HashMap<TokenId, ActorId>;
