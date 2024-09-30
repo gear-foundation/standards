@@ -92,7 +92,7 @@ jobs:
     - name: Prepare environment
       run: |
         mkdir -p extended-vft/target/tmp
-        curl -L https://get.gear.rs/gear-v1.5.0-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C extended-vft/target/tmp
+        curl -L https://get.gear.rs/gear-v1.6.1-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C extended-vft/target/tmp
 
     - name: Run tests
       run: cargo test -r --manifest-path extended-vft/Cargo.toml -- --ignored

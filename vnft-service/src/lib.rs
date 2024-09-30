@@ -2,11 +2,12 @@
 #![allow(clippy::new_without_default)]
 use crate::utils::*;
 use core::fmt::Debug;
-use gstd::{
+use sails_rs::{
     collections::{HashMap, HashSet},
-    msg, Decode, Encode, String, TypeInfo,
+    gstd::{msg, service},
+    prelude::*,
 };
-use sails_rs::{gstd::service, prelude::*};
+
 pub mod funcs;
 pub mod utils;
 
