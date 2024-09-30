@@ -2,7 +2,11 @@
 #![allow(clippy::new_without_default)]
 #![allow(unused_imports)]
 use core::fmt::Debug;
-use sails_rs::{gstd::{service, msg}, collections::HashMap, prelude::*};
+use sails_rs::{
+    collections::HashMap,
+    gstd::{msg, service},
+    prelude::*,
+};
 
 pub mod funcs;
 pub mod utils;

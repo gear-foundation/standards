@@ -1,6 +1,6 @@
 use core::fmt::Debug;
-use sails_rs::collections::{HashMap, HashSet};
 use gstd::ext;
+use sails_rs::collections::{HashMap, HashSet};
 use sails_rs::prelude::*;
 
 pub type TokenId = U256;
