@@ -11,15 +11,15 @@ edition = "2021"
 license = "GPL-3.0"
 
 [workspace.dependencies]
-gstd = "=1.6.1"
-gtest = "=1.6.1"
-gclient = "=1.6.1"
-gear-core = "=1.6.1"
-gwasm-builder = { package = "gear-wasm-builder", version = "=1.6.1" }
+gstd = "=1.6.2"
+gtest = "=1.6.2"
+gclient = "=1.6.2"
+gear-core = "=1.6.2"
+gwasm-builder = { package = "gear-wasm-builder", version = "=1.6.2" }
 parity-scale-codec = { version = "3.6", default-features = false }
-sails-idl-gen = "=0.6.0"
-sails-client-gen = "=0.6.0"
-sails-rs = "=0.6.0"
+sails-idl-gen = "=0.6.1"
+sails-client-gen = "=0.6.1"
+sails-rs = "=0.6.1"
 scale-info = { version = "2.10", default-features = false }
 primitive-types = { version = "*", default-features = false }
 derive-more = { version = "*", default-features = false, features = ["display"] }
@@ -31,5 +31,4 @@ syn = "2.0"
 thiserror = "1.0"
 tokio = "1.36"
 trybuild = "1"
-vnft-service = { path = "../vnft-service" }
-# vnft-service = { git = "https://github.com/gear-foundation/standards" }
+vnft-service = { git = "https://github.com/gear-foundation/standards" }
