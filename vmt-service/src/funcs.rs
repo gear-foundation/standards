@@ -1,6 +1,10 @@
 use super::utils::{Error, Result, *};
-use sails_rs::{prelude::*, collections::{HashMap, HashSet}, ActorId};
 use crate::Event;
+use sails_rs::{
+    collections::{HashMap, HashSet},
+    prelude::*,
+    ActorId,
+};
 
 pub fn approve(
     allowances: &mut HashMap<ActorId, HashSet<ActorId>>,
@@ -81,13 +85,10 @@ fn transfer_from_impl(
         .or_default()
         .insert(*from, from_new_balance);
 
-    balances
-        .entry(*id)
-        .or_default()
-        .insert(*to, to_new_balance);
+    balances.entry(*id).or_default().insert(*to, to_new_balance);
 }
 
-fn check_opportunity_transfer( 
+fn check_opportunity_transfer(
     balances: &HashMap<TokenId, HashMap<ActorId, U256>>,
     from: &ActorId,
     id: &TokenId,
@@ -101,19 +102,28 @@ fn check_opportunity_transfer(
     Ok(())
 }
 
-pub fn is_approved(allowances: &HashMap<ActorId, HashSet<ActorId>>, account: &ActorId, operator: &ActorId) -> bool {
+pub fn is_approved(
+    allowances: &HashMap<ActorId, HashSet<ActorId>>,
+    account: &ActorId,
+    operator: &ActorId,
+) -> bool {
     if let Some(approvals) = allowances.get(account) {
         return approvals.contains(operator);
     }
     false
 }
 
-pub fn get_balance(balances: &HashMap<TokenId, HashMap<ActorId, U256>>, account: &ActorId, id: &TokenId) -> U256 {
+pub fn get_balance(
+    balances: &HashMap<TokenId, HashMap<ActorId, U256>>,
+    account: &ActorId,
+    id: &TokenId,
+) -> U256 {
     let zero = U256::zero();
-    *balances.get(id).and_then(|m| m.get(account)).unwrap_or(&zero)
+    *balances
+        .get(id)
+        .and_then(|m| m.get(account))
+        .unwrap_or(&zero)
 }
-
-
 
 #[cfg(test)]
 mod tests {
@@ -149,7 +159,10 @@ mod tests {
         {
             let owner = alice();
             let approved = ActorId::zero();
-            assert_eq!(funcs::approve(&mut allowances, owner, approved), Err(Error::ZeroAddress));
+            assert_eq!(
+                funcs::approve(&mut allowances, owner, approved),
+                Err(Error::ZeroAddress)
+            );
         }
     }
 

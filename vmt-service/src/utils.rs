@@ -1,7 +1,7 @@
 use core::fmt::Debug;
 use gstd::ext;
-use sails_rs::prelude::*;
 use sails_rs::collections::HashMap;
+use sails_rs::prelude::*;
 pub type BalancesMap = HashMap<ActorId, U256>;
 pub type Result<T, E = Error> = core::result::Result<T, E>;
 pub type TokenId = U256;
@@ -15,7 +15,7 @@ pub enum Error {
     ZeroAddress,
     SenderAndRecipientAddressesAreSame,
     CallerIsNotOwnerOrApproved,
-    LengthMismatch
+    LengthMismatch,
 }
 
 pub fn panicking<T, E: Debug, F: FnOnce() -> Result<T, E>>(f: F) -> T {

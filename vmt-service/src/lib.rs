@@ -1,7 +1,7 @@
 #![no_std]
 #![allow(clippy::new_without_default)]
-use core::fmt::Debug;
 use crate::utils::*;
+use core::fmt::Debug;
 use sails_rs::{
     collections::{HashMap, HashSet},
     gstd::{msg, service},
@@ -15,7 +15,7 @@ static mut STORAGE: Option<Storage> = None;
 
 #[derive(Debug, Default)]
 pub struct Storage {
-    balances:  HashMap<TokenId, HashMap<ActorId, U256>>,
+    balances: HashMap<TokenId, HashMap<ActorId, U256>>,
     allowances: HashMap<ActorId, HashSet<ActorId>>,
     meta: Metadata,
     total_supply: U256,
@@ -95,11 +95,8 @@ impl Service {
         let storage = Storage::get_mut();
         let mutated = utils::panicking(move || funcs::approve(&mut storage.allowances, owner, to));
         if mutated {
-            self.notify_on(Event::Approval {
-                from: owner,
-                to,
-            })
-            .expect("Notification Error");
+            self.notify_on(Event::Approval { from: owner, to })
+                .expect("Notification Error");
         }
 
         mutated
@@ -110,23 +107,45 @@ impl Service {
     pub fn transfer_from(&mut self, from: ActorId, to: ActorId, id: TokenId, amount: U256) {
         let msg_src = msg::source();
         let storage = Storage::get_mut();
-        let event =
-            utils::panicking(move || funcs::transfer_from(&mut storage.balances, &storage.allowances, msg_src, from, to, vec![id], vec![amount]));
+        let event = utils::panicking(move || {
+            funcs::transfer_from(
+                &mut storage.balances,
+                &storage.allowances,
+                msg_src,
+                from,
+                to,
+                vec![id],
+                vec![amount],
+            )
+        });
 
-        self.notify_on(event)
-            .expect("Notification Error");
+        self.notify_on(event).expect("Notification Error");
     }
 
     /// Transfers multiple tokens in batch from one account (`from`) to another (`to`).
     /// This method transfers multiple token IDs and amounts simultaneously.
-    pub fn batch_transfer_from(&mut self, from: ActorId, to: ActorId, ids: Vec<TokenId>, amounts: Vec<U256>) {
+    pub fn batch_transfer_from(
+        &mut self,
+        from: ActorId,
+        to: ActorId,
+        ids: Vec<TokenId>,
+        amounts: Vec<U256>,
+    ) {
         let msg_src = msg::source();
         let storage = Storage::get_mut();
-        let event =
-            utils::panicking(move || funcs::transfer_from(&mut storage.balances, &storage.allowances, msg_src, from, to, ids, amounts));
+        let event = utils::panicking(move || {
+            funcs::transfer_from(
+                &mut storage.balances,
+                &storage.allowances,
+                msg_src,
+                from,
+                to,
+                ids,
+                amounts,
+            )
+        });
 
-        self.notify_on(event)
-            .expect("Notification Error");
+        self.notify_on(event).expect("Notification Error");
     }
 
     /// Checks if a specific operator (`operator`) is approved to transfer tokens on behalf of `account`.
