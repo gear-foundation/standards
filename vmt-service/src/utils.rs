@@ -1,8 +1,6 @@
 use core::fmt::Debug;
 use gstd::ext;
-use sails_rs::collections::HashMap;
 use sails_rs::prelude::*;
-pub type BalancesMap = HashMap<ActorId, U256>;
 pub type Result<T, E = Error> = core::result::Result<T, E>;
 pub type TokenId = U256;
 

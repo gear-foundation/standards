@@ -18,7 +18,7 @@ pub struct Storage {
     balances: HashMap<TokenId, HashMap<ActorId, U256>>,
     allowances: HashMap<ActorId, HashSet<ActorId>>,
     meta: Metadata,
-    total_supply: U256,
+    total_supply: HashMap<TokenId, U256>,
 }
 
 impl Storage {
@@ -36,7 +36,7 @@ impl Storage {
         let storage = unsafe { STORAGE.as_mut().expect("Storage is not initialized") };
         &mut storage.allowances
     }
-    pub fn total_supply() -> &'static mut U256 {
+    pub fn total_supply() -> &'static mut HashMap<TokenId, U256> {
         let storage = unsafe { STORAGE.as_mut().expect("Storage is not initialized") };
         &mut storage.total_supply
     }
@@ -180,8 +180,8 @@ impl Service {
     }
 
     /// Returns the total supply of tokens in circulation.
-    pub fn total_supply(&self) -> &'static U256 {
+    pub fn total_supply(&self) -> Vec<(TokenId, U256)> {
         let storage = Storage::get();
-        &storage.total_supply
+        storage.total_supply.clone().into_iter().collect()
     }
 }

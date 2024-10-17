@@ -159,4 +159,41 @@ jobs:
     - name: Run tests
       run: cargo test -r --manifest-path extended-vnft/Cargo.toml -- --ignored
 
+
+  extend-vmt:
+    needs: [vmt-service]
+    name: ExtendVmt
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        target: wasm32-unknown-unknown
+        override: true
+
+    - name: Install Clippy
+      run: rustup component add clippy
+
+    - name: Install Rustfmt
+      run: rustup component add rustfmt
+
+    - name: Check formatting
+      run: cargo fmt --all --manifest-path extended-vmt/Cargo.toml -- --check
+
+    - name: Run Clippy
+      run: cargo clippy -r --manifest-path extended-vmt/Cargo.toml -- -D warnings
+
+    - name: Prepare environment
+      run: |
+        mkdir -p extended-vmt/target/tmp
+        curl -L https://get.gear.rs/gear-v1.5.0-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C extended-vmt/target/tmp
+
+    - name: Run tests
+      run: cargo test -r --manifest-path extended-vmt/Cargo.toml -- --ignored
+
   

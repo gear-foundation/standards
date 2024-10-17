@@ -77,15 +77,18 @@ fn transfer_from_impl(
     id: &TokenId,
     amount: U256,
 ) {
-    let from_new_balance = get_balance(balances, from, id).saturating_sub(amount);
-    let to_new_balance = get_balance(balances, to, id).saturating_add(amount);
+    balances
+        .entry(*id)
+        .or_default()
+        .entry(*from)
+        .and_modify(|balance| *balance = balance.saturating_sub(amount));
 
     balances
         .entry(*id)
         .or_default()
-        .insert(*from, from_new_balance);
-
-    balances.entry(*id).or_default().insert(*to, to_new_balance);
+        .entry(*to)
+        .and_modify(|balance| *balance = balance.saturating_add(amount))
+        .or_insert(amount);
 }
 
 fn check_opportunity_transfer(
