@@ -161,6 +161,23 @@ impl Service {
         funcs::get_balance(&storage.balances, &account, &id)
     }
 
+    /// Returns token account balances (`accounts`) for specific token identifiers (`ids`).
+    pub fn balance_of_batch(&self, accounts: Vec<ActorId>, ids: Vec<TokenId>) -> Vec<U256> {
+        let storage = Storage::get();
+
+        assert_eq!(
+            accounts.len(),
+            ids.len(),
+            "Accounts and IDs must have the same length"
+        );
+
+        accounts
+            .into_iter()
+            .zip(ids.into_iter())
+            .map(|(account, id)| funcs::get_balance(&storage.balances, &account, &id))
+            .collect()
+    }
+
     /// Returns the number of decimal places used for this token.
     pub fn decimals(&self) -> &'static u8 {
         let storage = Storage::get();

@@ -34,6 +34,8 @@ service Vmt {
   query Minters : () -> vec actor_id;
   /// Returns the token balance of an account (`account`) for a specific token ID (`id`).
   query BalanceOf : (account: actor_id, id: u256) -> u256;
+  /// Returns token account balances (`accounts`) for specific token identifiers (`ids`).
+  query BalanceOfBatch : (accounts: vec actor_id, ids: vec u256) -> vec u256;
   /// Returns the number of decimal places used for this token.
   query Decimals : () -> u8;
   /// Checks if a specific operator (`operator`) is approved to transfer tokens on behalf of `account`.
