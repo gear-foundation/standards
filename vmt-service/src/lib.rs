@@ -173,7 +173,7 @@ impl Service {
 
         accounts
             .into_iter()
-            .zip(ids.into_iter())
+            .zip(ids)
             .map(|(account, id)| funcs::get_balance(&storage.balances, &account, &id))
             .collect()
     }
