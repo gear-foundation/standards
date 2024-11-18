@@ -22,6 +22,8 @@ pub struct ExtendedStorage {
 static mut EXTENDED_STORAGE: Option<ExtendedStorage> = None;
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, TypeInfo)]
+#[codec(crate = sails_rs::scale_codec)]
+#[scale_info(crate = sails_rs::scale_info)]
 pub enum Event {
     Minted {
         to: ActorId,

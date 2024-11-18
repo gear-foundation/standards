@@ -4,10 +4,10 @@
 use sails_rs::prelude::*;
 mod services;
 use services::extended_vft::ExtendedService;
-pub struct Program(());
+pub struct ExtendedVftProgram(());
 
 #[program]
-impl Program {
+impl ExtendedVftProgram {
     pub fn new(name: String, symbol: String, decimals: u8) -> Self {
         ExtendedService::seed(name, symbol, decimals);
         Self(())

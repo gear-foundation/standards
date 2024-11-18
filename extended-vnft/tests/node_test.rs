@@ -1,7 +1,7 @@
 use gclient::{EventProcessor, GearApi, Result};
 use sails_rs::{ActorId, Decode, Encode, U256};
 mod utils_gclient;
-use extended_vnft_wasm::TokenMetadata;
+use extended_vnft_client::TokenMetadata;
 use utils_gclient::*;
 
 #[tokio::test]

@@ -4,6 +4,8 @@ pub type Result<T, E = Error> = core::result::Result<T, E>;
 pub type TokenId = U256;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, TypeInfo)]
+#[codec(crate = sails_rs::scale_codec)]
+#[scale_info(crate = sails_rs::scale_info)]
 pub enum Error {
     ZeroAddress,
     LengthMismatch,
@@ -16,8 +18,8 @@ pub enum Error {
 }
 
 #[derive(Debug, Decode, Encode, TypeInfo, Default, Clone, PartialEq, Eq)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
+#[codec(crate = sails_rs::scale_codec)]
+#[scale_info(crate = sails_rs::scale_info)]
 pub struct TokenMetadata {
     pub title: Option<String>,
     pub description: Option<String>,

@@ -8,14 +8,7 @@ cargo b -r
 
 ### ✅ Testing
 
-Run all tests, except `gclient` ones:
+Run all tests:
 ```sh
 cargo t -r 
 ```
-
-Run all tests:
-```sh
-# Download the node binary.
-cargo t -r -- --ignored
-```
-
