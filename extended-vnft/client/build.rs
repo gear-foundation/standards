@@ -6,7 +6,8 @@ fn main() {
     let idl_file_path = out_dir_path.join("extended_vnft.idl");
 
     // Generate IDL file for the program
-    sails_idl_gen::generate_idl_to_file::<extended_vnft_app::ExtendedVnftProgram>(&idl_file_path).unwrap();
+    sails_idl_gen::generate_idl_to_file::<extended_vnft_app::ExtendedVnftProgram>(&idl_file_path)
+        .unwrap();
 
     // Generate client code from IDL file
     ClientGenerator::from_idl_path(&idl_file_path)
