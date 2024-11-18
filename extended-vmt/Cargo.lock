@@ -1401,12 +1401,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 
 [[package]]
-name = "foldhash"
-version = "0.1.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f81ec6369c545a7d40e4589b5597581fa1c441fe1cce96dd1de43159910a36a2"
-
-[[package]]
 name = "form_urlencoded"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2348,11 +2342,6 @@ name = "hashbrown"
 version = "0.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3a9bfc1af68b1726ea47d3d5109de126281def866b33970e10fbab11b5dafab3"
-dependencies = [
- "allocator-api2",
- "equivalent",
- "foldhash",
-]
 
 [[package]]
 name = "hermit-abi"
@@ -4004,9 +3993,9 @@ checksum = "f3cb5ba0dc43242ce17de99c180e96db90b235b8a9fdc9543c96d2209116bd9f"
 
 [[package]]
 name = "sails-client-gen"
-version = "0.6.3"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fc66a2e75b65b78db5bcd15dce50c76a7dadc2d0f33a18b90d77a99b162029e"
+checksum = "73bc0a42ca476e51472b5a306ae9e7df2633a657f1ff5963f574f45fecab9d3e"
 dependencies = [
  "anyhow",
  "convert_case 0.6.0",
@@ -4017,14 +4006,13 @@ dependencies = [
 
 [[package]]
 name = "sails-idl-gen"
-version = "0.6.3"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa290ce00f84ab7d595a49cf94e4555702c67194c1d18ce46fa8c2db1bdcafe7"
+checksum = "a56c5855b0e938b36437b13068554a62b81c866215589476159c9239af444ff2"
 dependencies = [
  "convert_case 0.6.0",
- "gprimitives",
  "handlebars",
- "sails-idl-meta",
+ "sails-rs",
  "scale-info",
  "serde",
  "serde_json",
@@ -4032,19 +4020,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "sails-idl-meta"
-version = "0.6.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d82ca64a461a43ace14347ce2fd98e317267e521492b3f33d60173a2bebc5fd"
-dependencies = [
- "scale-info",
-]
-
-[[package]]
 name = "sails-idl-parser"
-version = "0.6.3"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de89ffc59a12dbbc342b61a44264b4cf9e209da373b317ad556da6af0c3a65e1"
+checksum = "08072a404594237b4b7566d5a1274a5692de98077b6782e4ff3f0ff0f35a98d4"
 dependencies = [
  "lalrpop",
  "lalrpop-util",
@@ -4054,9 +4033,9 @@ dependencies = [
 
 [[package]]
 name = "sails-macros"
-version = "0.6.3"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "826dbf91e0c76891a82c2e84dbd81ffef9315b4c3a8d088470b42ef12b5fb41f"
+checksum = "e3e4d5cfe11275a0aecab342e2120a77b66abc0d4a45a06f35462e74beedd583"
 dependencies = [
  "proc-macro-error",
  "sails-macros-core",
@@ -4064,9 +4043,9 @@ dependencies = [
 
 [[package]]
 name = "sails-macros-core"
-version = "0.6.3"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0bf76e6ce03fbe6a3176655a29021c0659e31321968b44de6b24970a19445278"
+checksum = "1c628f38de9e87a05188a0fb2207ebac9eac4baaf25b3685574e40a1ae62d53c"
 dependencies = [
  "convert_case 0.6.0",
  "parity-scale-codec",
@@ -4078,9 +4057,9 @@ dependencies = [
 
 [[package]]
 name = "sails-rs"
-version = "0.6.3"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32dcfe54cef8a51a8920200b5cc1b187989e1b0dbf36121280dc9b79343313d5"
+checksum = "07b82085e4f45580facef051ebcdd14f41844604db741bb7af1c7f1d8398780f"
 dependencies = [
  "futures",
  "gear-core",
@@ -4089,11 +4068,10 @@ dependencies = [
  "gprimitives",
  "gstd",
  "gtest",
- "hashbrown 0.15.1",
+ "hashbrown 0.14.5",
  "hex",
  "mockall",
  "parity-scale-codec",
- "sails-idl-meta",
  "sails-macros",
  "scale-info",
  "spin",

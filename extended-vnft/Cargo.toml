@@ -13,13 +13,13 @@ extended-vnft-app = { path = "app" }
 
 [build-dependencies]
 extended-vnft-app = { path = "app" }
-sails-rs = { version = "=0.6.3", features = ["wasm-builder"] }
-sails-idl-gen = "=0.6.3"
+sails-rs = { version = "=0.6.1", features = ["wasm-builder"] }
+sails-idl-gen = "=0.6.1"
 
 [dev-dependencies]
 extended-vnft = { path = ".", features = ["wasm-binary"] }
 extended-vnft-client = { path = "client" }
-sails-rs = { version = "=0.6.3", features = ["gtest"] }
+sails-rs = { version = "=0.6.1", features = ["gtest"] }
 tokio = { version = "1.41", features = ["rt", "macros"] }
 gclient = "=1.6.2"
 gear-core = "=1.6.2"
