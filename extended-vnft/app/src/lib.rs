@@ -4,10 +4,10 @@
 use sails_rs::prelude::*;
 mod services;
 use services::extended_vnft::ExtendedService;
-pub struct Program(());
+pub struct ExtendedVnftProgram(());
 
 #[program]
-impl Program {
+impl ExtendedVnftProgram {
     pub fn new(name: String, symbol: String) -> Self {
         ExtendedService::init(name, symbol);
         Self(())

@@ -1,24 +1,9 @@
 [package]
 name = "extended-vmt-app"
-version.workspace = true
-edition.workspace = true
-license.workspace = true
+version = "0.1.0"
+edition = "2021"
 
 [dependencies]
-gstd.workspace = true
-log.workspace = true
-sails-rs = { workspace = true, features = ["gtest"] }
-parity-scale-codec.workspace = true
-scale-info.workspace = true
-vmt-service.workspace = true
-
-[dev-dependencies]
-env_logger.workspace = true
-gclient.workspace = true
-gtest.workspace = true
-gear-core.workspace = true
-extended_vmt_wasm = { path = "../wasm" }
-tokio = "1"
-
-[build-dependencies]
-gwasm-builder.workspace = true
+sails-rs = "=0.6.1"
+vmt-service = { path = "../../vmt-service" }
+gstd = "=1.6.2"

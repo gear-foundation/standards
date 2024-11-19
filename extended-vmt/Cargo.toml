@@ -1,35 +1,26 @@
 [workspace]
-resolver = "2"
 
-members = [
-    "app", "wasm",
-]
+members = ["client"]
 
-[workspace.package]
+
+[package]
+name = "extended-vmt"
 version = "0.1.0"
 edition = "2021"
-license = "GPL-3.0"
 
-[workspace.dependencies]
-gstd = "=1.6.2"
-gtest = "=1.6.2"
-gclient = "=1.6.2"
-gear-core = "=1.6.2"
-gwasm-builder = { package = "gear-wasm-builder", version = "=1.6.2" }
-parity-scale-codec = { version = "3.6", default-features = false }
+[dependencies]
+extended-vmt-app = { path = "app" }
+
+[build-dependencies]
+extended-vmt-app = { path = "app" }
+sails-rs = { version = "=0.6.1", features = ["wasm-builder"] }
 sails-idl-gen = "=0.6.1"
-sails-client-gen = "=0.6.1"
-sails-rs = "=0.6.1"
-scale-info = { version = "2.10", default-features = false }
-primitive-types = { version = "*", default-features = false }
-derive-more = { version = "*", default-features = false, features = ["display"] }
-log = "*"
-env_logger = "*"
-serde = "1.0"
-serde-json = { package = "serde_json", version = "1.0" }
-syn = "2.0"
-thiserror = "1.0"
-tokio = "1.36"
-trybuild = "1"
-vmt-service = { path = "../vmt-service" }
-# vmt-service = { git = "https://github.com/gear-foundation/standards" }
+
+[dev-dependencies]
+extended-vmt = { path = ".", features = ["wasm-binary"] }
+extended-vmt-client = { path = "client" }
+sails-rs = { version = "=0.6.1", features = ["gtest"] }
+tokio = { version = "1.41", features = ["rt", "macros"] }
+
+[features]
+wasm-binary = []

@@ -1,0 +1,16 @@
+[package]
+name = "extended-vnft-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+mockall = { version = "0.12", optional = true }
+sails-rs = "=0.6.1"
+
+[build-dependencies]
+extended-vnft-app = { path = "../app" }
+sails-client-gen = "=0.6.1"
+sails-idl-gen = "=0.6.1"
+
+[features]
+mocks = ["sails-rs/mockall", "dep:mockall"]
