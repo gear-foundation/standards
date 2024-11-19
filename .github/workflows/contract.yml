@@ -35,7 +35,7 @@ jobs:
       run: cargo fmt --all --check
 
     - name: Run Clippy
-      run: cargo clippy --all -- -D warnings
+      run: cargo clippy -r --all -- -D warnings
 
     - name: Prepare environment
       run: |
@@ -43,4 +43,4 @@ jobs:
         curl -L https://get.gear.rs/gear-v1.6.1-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C target/tmp
 
     - name: Run tests
-      run: cargo test --all -- --ignored
+      run: cargo test -r --all -- --ignored
