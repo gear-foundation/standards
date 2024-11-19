@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-sails-rs = "=0.6.1"
-gstd = "=1.6.2"
+sails-rs.workspace = true
+gstd.workspace = true
 vnft-service = { path = "../../vnft-service" }

@@ -1,0 +1,35 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "extended-vft",
+    "extended-vft/client",
+    "extended-vmt",
+    "extended-vmt/client",
+    "extended-vnft",
+    "extended-vnft/client",
+    "vft-service",
+    "vmt-service",
+    "vnft-service",
+]
+
+[workspace.package]
+homepage = "https://wiki.gear-tech.io/docs/examples/prerequisites"
+authors = ["Gear Foundation <hello@gear.foundation>"]
+version = "1.1.0"
+license = "MIT"
+edition = "2021"
+publish = false
+
+[workspace.dependencies]
+gstd = "=1.6.2"
+gclient = "=1.6.2"
+gear-core = "=1.6.2"
+sails-rs = "=0.6.1"
+sails-idl-gen = "=0.6.1"
+sails-client-gen = "=0.6.1"
+log = "*"
+env_logger = "*"
+tokio = { version = "1.41", features = ["rt", "macros"] }
+scale-info = { version = "2", default-features = false }
+parity-scale-codec = { version = "3", default-features = false }
