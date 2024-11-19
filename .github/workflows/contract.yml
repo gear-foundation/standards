@@ -7,98 +7,8 @@ on:
     branches: [master]
 
 jobs:
-  vft-service:
-      name: VftService
-      runs-on: ubuntu-latest
-
-      steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          override: true
-
-      - name: Install Clippy
-        run: rustup component add clippy
-
-      - name: Install Rustfmt
-        run: rustup component add rustfmt
-
-      - name: Install rust-src component
-        run: rustup component add rust-src --toolchain stable-x86_64-unknown-linux-gnu
-
-      - name: Check formatting
-        run: cargo fmt --all --manifest-path vft-service/Cargo.toml -- --check
-
-      - name: Run Clippy
-        run: cargo clippy -r --manifest-path vft-service/Cargo.toml -- -D warnings
-  
-  vnft-service:
-      name: VnftService
-      runs-on: ubuntu-latest
-
-      steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          override: true
-
-      - name: Install Clippy
-        run: rustup component add clippy
-
-      - name: Install Rustfmt
-        run: rustup component add rustfmt
-
-      - name: Install rust-src component
-        run: rustup component add rust-src --toolchain stable-x86_64-unknown-linux-gnu
-
-      - name: Check formatting
-        run: cargo fmt --all --manifest-path vnft-service/Cargo.toml -- --check
-
-      - name: Run Clippy
-        run: cargo clippy -r --manifest-path vnft-service/Cargo.toml -- -D warnings
-  vmt-service:
-      name: VmtService
-      runs-on: ubuntu-latest
-
-      steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          override: true
-
-      - name: Install Clippy
-        run: rustup component add clippy
-
-      - name: Install Rustfmt
-        run: rustup component add rustfmt
-
-      - name: Install rust-src component
-        run: rustup component add rust-src --toolchain stable-x86_64-unknown-linux-gnu
-
-      - name: Check formatting
-        run: cargo fmt --all --manifest-path vmt-service/Cargo.toml -- --check
-
-      - name: Run Clippy
-        run: cargo clippy -r --manifest-path vmt-service/Cargo.toml -- -D warnings
-
-  extend-vft:
-    needs: [vft-service]
-    name: ExtendVft
+  build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
 
     steps:
@@ -122,96 +32,15 @@ jobs:
       run: rustup component add rust-src --toolchain stable-x86_64-unknown-linux-gnu
 
     - name: Check formatting
-      run: cargo fmt --all --manifest-path extended-vft/Cargo.toml -- --check
+      run: cargo fmt --all --check
 
     - name: Run Clippy
-      run: cargo clippy -r --manifest-path extended-vft/Cargo.toml -- -D warnings
+      run: cargo clippy --all -- -D warnings
 
     - name: Prepare environment
       run: |
-        mkdir -p extended-vft/target/tmp
-        curl -L https://get.gear.rs/gear-v1.6.1-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C extended-vft/target/tmp
+        mkdir -p target/tmp
+        curl -L https://get.gear.rs/gear-v1.6.1-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C target/tmp
 
     - name: Run tests
-      run: cargo test -r --manifest-path extended-vft/Cargo.toml -- --ignored
-      
-  extend-vnft:
-    needs: [vnft-service]
-    name: ExtendVnft
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        target: wasm32-unknown-unknown
-        override: true
-
-    - name: Install Clippy
-      run: rustup component add clippy
-
-    - name: Install Rustfmt
-      run: rustup component add rustfmt
-
-    - name: Install rust-src component
-      run: rustup component add rust-src --toolchain stable-x86_64-unknown-linux-gnu
-
-    - name: Check formatting
-      run: cargo fmt --all --manifest-path extended-vnft/Cargo.toml -- --check
-
-    - name: Run Clippy
-      run: cargo clippy -r --manifest-path extended-vnft/Cargo.toml -- -D warnings
-
-    - name: Prepare environment
-      run: |
-        mkdir -p extended-vnft/target/tmp
-        curl -L https://get.gear.rs/gear-v1.5.0-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C extended-vnft/target/tmp
-
-    - name: Run tests
-      run: cargo test -r --manifest-path extended-vnft/Cargo.toml -- --ignored
-
-
-  extend-vmt:
-    needs: [vmt-service]
-    name: ExtendVmt
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        target: wasm32-unknown-unknown
-        override: true
-
-    - name: Install Clippy
-      run: rustup component add clippy
-
-    - name: Install Rustfmt
-      run: rustup component add rustfmt
-      
-    - name: Install rust-src component
-      run: rustup component add rust-src --toolchain stable-x86_64-unknown-linux-gnu
-
-    - name: Check formatting
-      run: cargo fmt --all --manifest-path extended-vmt/Cargo.toml -- --check
-
-    - name: Run Clippy
-      run: cargo clippy -r --manifest-path extended-vmt/Cargo.toml -- -D warnings
-
-    - name: Prepare environment
-      run: |
-        mkdir -p extended-vmt/target/tmp
-        curl -L https://get.gear.rs/gear-v1.5.0-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C extended-vmt/target/tmp
-
-    - name: Run tests
-      run: cargo test -r --manifest-path extended-vmt/Cargo.toml -- --ignored
-
-  
+      run: cargo test --all -- --ignored
