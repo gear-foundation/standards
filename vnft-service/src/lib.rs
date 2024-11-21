@@ -159,13 +159,4 @@ impl Service {
         let storage = Storage::get();
         &storage.symbol
     }
-    pub fn tokens_for_owner(&self, owner: ActorId) -> Vec<TokenId> {
-        Storage::get()
-            .tokens_for_owner
-            .get(&owner)
-            .unwrap_or(&HashSet::new())
-            .iter()
-            .cloned()
-            .collect()
-    }
 }
