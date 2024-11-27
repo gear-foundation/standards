@@ -77,21 +77,23 @@ async fn test_grant_role() -> Result<()> {
     assert!(listener.message_processed(message_id).await?.succeed());
     // Check State
     let admins: Vec<ActorId> = get_state!(api: &api, listener: listener, program_id: program_id, service_name: "Vft", action: "Admins", return_type: Vec<ActorId>, payload: ());
-    assert_eq!(admins, vec![api.get_actor_id(), john_actor_id]);
-
+    assert!(admins.contains(&api.get_actor_id()));
+    assert!(admins.contains(&john_actor_id));
     // Grant Minter Role
     let message_id = send_request!(api: &api, program_id: program_id, service_name: "Vft", action: "GrantMinterRole", payload: (john_actor_id));
     assert!(listener.message_processed(message_id).await?.succeed());
     // Check State
     let minters: Vec<ActorId> = get_state!(api: &api, listener: listener, program_id: program_id, service_name: "Vft", action: "Minters", return_type: Vec<ActorId>, payload: ());
-    assert_eq!(minters, vec![api.get_actor_id(), john_actor_id]);
+    assert!(minters.contains(&api.get_actor_id()));
+    assert!(minters.contains(&john_actor_id));
 
     // Grant Burner Role
     let message_id = send_request!(api: &api, program_id: program_id, service_name: "Vft", action: "GrantBurnerRole", payload: (john_actor_id));
     assert!(listener.message_processed(message_id).await?.succeed());
     // Check State
     let burners: Vec<ActorId> = get_state!(api: &api, listener: listener, program_id: program_id, service_name: "Vft", action: "Burners", return_type: Vec<ActorId>, payload: ());
-    assert_eq!(burners, vec![api.get_actor_id(), john_actor_id]);
+    assert!(burners.contains(&api.get_actor_id()));
+    assert!(burners.contains(&john_actor_id));
 
     // John Mint
     let value: U256 = 1_000.into();

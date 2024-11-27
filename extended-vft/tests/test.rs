@@ -19,7 +19,7 @@ async fn test_basic_function() {
     let program_space = GTestRemoting::new(system, ADMIN_ID.into());
     let code_id = program_space
         .system()
-        .submit_code_file("target/wasm32-unknown-unknown/release/extended_vft.opt.wasm");
+        .submit_code_file("../target/wasm32-unknown-unknown/release/extended_vft.opt.wasm");
 
     let extended_vft_factory = Factory::new(program_space.clone());
     let extended_vft_id = extended_vft_factory
@@ -136,7 +136,7 @@ async fn test_grant_role() {
 
     let code_id = program_space
         .system()
-        .submit_code_file("target/wasm32-unknown-unknown/release/extended_vft.opt.wasm");
+        .submit_code_file("../target/wasm32-unknown-unknown/release/extended_vft.opt.wasm");
 
     let extended_vft_factory = Factory::new(program_space.clone());
     let extended_vft_id = extended_vft_factory
