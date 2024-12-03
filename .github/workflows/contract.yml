@@ -45,15 +45,6 @@ jobs:
     - name: Run tests
       run: cargo test -r --all -- --ignored
 
-    - name: Build for WASM
-      run: cargo build --release --target wasm32-unknown-unknown
-
-    - name: Collect artifacts
-      run: |
-        mkdir -p artifacts
-        cp target/wasm32-unknown-unknown/release/*.wasm artifacts/
-        cp target/wasm32-unknown-unknown/release/*.idl artifacts/
-
     - name: Build Docker image
       run: |
         docker build -t ghcr.io/${{ github.repository_owner }}/wasm-artifacts:latest .

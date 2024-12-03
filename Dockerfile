@@ -1,5 +1,7 @@
 FROM rust:1.83 as builder
 
+RUN rustup target add wasm32-unknown-unknown
+
 WORKDIR /usr/src/myapp
 
 COPY . .
