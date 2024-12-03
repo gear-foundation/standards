@@ -1,5 +1,6 @@
 #![no_std]
 #![allow(clippy::new_without_default)]
+#![allow(static_mut_refs)]
 use crate::utils::*;
 use core::fmt::Debug;
 use sails_rs::{

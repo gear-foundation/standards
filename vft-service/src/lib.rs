@@ -1,6 +1,7 @@
 #![no_std]
 #![allow(clippy::new_without_default)]
 #![allow(unused_imports)]
+#![allow(static_mut_refs)]
 use core::fmt::Debug;
 use sails_rs::{
     collections::HashMap,
