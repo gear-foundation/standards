@@ -44,3 +44,34 @@ jobs:
 
     - name: Run tests
       run: cargo test -r --all -- --ignored
+
+    - name: Build for WASM
+      run: cargo build --release --target wasm32-unknown-unknown
+
+    - name: Collect artifacts
+      run: |
+        mkdir -p artifacts
+        cp target/wasm32-unknown-unknown/release/*.wasm artifacts/
+        cp target/wasm32-unknown-unknown/release/*.idl artifacts/
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: artifacts/*
+
+    - name: Publish artifacts to GitHub Packages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "Publishing artifacts to GitHub Packages"
+        mkdir -p packages
+        for file in artifacts/*; do
+          filename=$(basename "$file")
+          curl -u "${{ secrets.GITHUB_ACTOR }}:${{ secrets.GITHUB_TOKEN }}" \
+            -X POST \
+            -H "Content-Type: application/octet-stream" \
+            --data-binary @"$file" \
+            https://api.github.com/repos/${{ github.repository }}/packages \
+            -H "Accept: application/vnd.github.v3+json"
+        done
