@@ -1,5 +1,6 @@
 FROM rust:1.83 as builder
 
+RUN rustup component add rust-src --toolchain 1.83.0-x86_64-unknown-linux-gnu
 RUN rustup target add wasm32-unknown-unknown
 RUN rustup component add rustfmt
 
