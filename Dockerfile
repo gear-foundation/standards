@@ -1,6 +1,7 @@
 FROM rust:1.83 as builder
 
 RUN rustup target add wasm32-unknown-unknown
+RUN rustup component add rustfmt
 
 WORKDIR /usr/src/myapp
 
