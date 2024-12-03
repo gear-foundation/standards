@@ -4,9 +4,11 @@ RUN rustup component add rust-src --toolchain 1.83.0-x86_64-unknown-linux-gnu
 RUN rustup target add wasm32-unknown-unknown
 RUN rustup component add rustfmt
 
-WORKDIR /usr/src/myapp
+WORKDIR /usr/src/standards
 
 COPY . .
+
+RUN ls -al /usr/src/standards/
 
 RUN cargo build --release
 
@@ -14,12 +16,12 @@ FROM debian:bullseye-slim
 
 RUN mkdir /artifacts
 
-RUN ls -al /usr/src/myapp/
+RUN ls -al /usr/src/standards/
 
-RUN ls -al /usr/src/myapp/standards/target/wasm32-unknown-unknown/release/
+RUN ls -al /usr/src/standards/target/wasm32-unknown-unknown/release/
 
-COPY --from=builder /usr/src/myapp/target/wasm32-unknown-unknown/release/*.wasm /artifacts/
-COPY --from=builder /usr/src/myapp/target/wasm32-unknown-unknown/release/*.idl /artifacts/
+COPY --from=builder /usr/src/standards/target/wasm32-unknown-unknown/release/*.wasm /artifacts/
+COPY --from=builder /usr/src/standards/target/wasm32-unknown-unknown/release/*.idl /artifacts/
 
 RUN ls -al /artifacts
 
