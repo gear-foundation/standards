@@ -31,11 +31,19 @@ jobs:
     - name: Install rust-src component
       run: rustup component add rust-src --toolchain stable-x86_64-unknown-linux-gnu
 
-    # - name: Check formatting
-    #   run: cargo fmt --all --check
+    - name: Check formatting
+      run: cargo fmt --all --check
 
-    # - name: Run Clippy
-    #   run: cargo clippy -r --all -- -D warnings
+    - name: Run Clippy
+      run: cargo clippy -r --all -- -D warnings
+
+    - name: Prepare environment
+      run: |
+        mkdir -p target/tmp
+        curl -L https://get.gear.rs/gear-v1.6.1-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C target/tmp
+
+    - name: Run tests
+      run: cargo test -r --all -- --ignored
 
     - name: Build project
       run: cargo build --release
@@ -46,7 +54,6 @@ jobs:
         cp target/wasm32-unknown-unknown/release/*.wasm artifacts/
         cp target/wasm32-unknown-unknown/release/*.idl artifacts/
 
-    # Upload artifacts to GitHub Actions
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
