@@ -15,14 +15,13 @@ RUN ls -al /usr/src/standards/
 
 RUN cargo build --release
 
+RUN ls -al /usr/src/standards/target/wasm32-unknown-unknown/release/
 FROM debian:bullseye-slim
 
 RUN mkdir /artifacts
 
-RUN ls -al target/wasm32-unknown-unknown/release/
-
-COPY --from=builder target/wasm32-unknown-unknown/release/*.wasm /artifacts/
-COPY --from=builder target/wasm32-unknown-unknown/release/*.idl /artifacts/
+COPY --from=builder /usr/src/standards/target/wasm32-unknown-unknown/release/*.wasm /artifacts/
+COPY --from=builder /usr/src/standards/target/wasm32-unknown-unknown/release/*.idl /artifacts/
 
 RUN ls -al /artifacts
 
