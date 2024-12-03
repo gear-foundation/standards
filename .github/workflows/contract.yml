@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-publish:
-    name: Build, Test and Publish Docker Image
+    name: Build and Publish Artifacts
     runs-on: ubuntu-latest
 
     steps:
@@ -37,25 +37,18 @@ jobs:
     # - name: Run Clippy
     #   run: cargo clippy -r --all -- -D warnings
 
-    # - name: Prepare environment
-    #   run: |
-    #     mkdir -p target/tmp
-    #     curl -L https://get.gear.rs/gear-v1.6.1-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C target/tmp
+    - name: Build project
+      run: cargo build --release --target wasm32-unknown-unknown
 
-    # - name: Run tests
-    #   run: cargo test -r --all -- --ignored
-
-    - name: Build Docker image
+    - name: Prepare artifacts directory
       run: |
-        docker build -t ghcr.io/${{ github.repository_owner }}/wasm-artifacts:latest .
+        mkdir -p artifacts
+        cp target/wasm32-unknown-unknown/release/*.wasm artifacts/
+        cp target/wasm32-unknown-unknown/release/*.idl artifacts/
 
-    - name: Log in to GitHub Docker Registry
-      uses: docker/login-action@v2
+    # Upload artifacts to GitHub Actions
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
       with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Push Docker image to GitHub Packages
-      run: |
-        docker push ghcr.io/${{ github.repository_owner }}/wasm-artifacts:latest
+        name: wasm-artifacts
+        path: artifacts/
