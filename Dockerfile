@@ -8,6 +8,9 @@ WORKDIR /usr/src/standards
 
 COPY . .
 
+RUN ls -al
+RUN pwd
+
 RUN ls -al /usr/src/standards/
 
 RUN cargo build --release
@@ -15,8 +18,6 @@ RUN cargo build --release
 FROM debian:bullseye-slim
 
 RUN mkdir /artifacts
-
-RUN ls -al /usr/src/standards/
 
 RUN ls -al /usr/src/standards/target/wasm32-unknown-unknown/release/
 
