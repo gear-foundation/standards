@@ -8,13 +8,17 @@ WORKDIR /usr/src/myapp
 
 COPY . .
 
-RUN cargo build --release --target wasm32-unknown-unknown
+RUN cargo build --release
 
 FROM debian:bullseye-slim
 
 RUN mkdir /artifacts
 
+RUN ls -al /usr/src/myapp/target/wasm32-unknown-unknown/release/
+
 COPY --from=builder /usr/src/myapp/target/wasm32-unknown-unknown/release/*.wasm /artifacts/
 COPY --from=builder /usr/src/myapp/target/wasm32-unknown-unknown/release/*.idl /artifacts/
+
+RUN ls -al /artifacts
 
 ENTRYPOINT ["echo", "Artifacts published to /artifacts"]
