@@ -70,7 +70,6 @@ impl Service {
                 owner_by_id: HashMap::with_capacity(u16::MAX as usize),
                 tokens_for_owner: HashMap::with_capacity(u16::MAX as usize),
                 token_approvals: HashMap::with_capacity(u16::MAX as usize),
-                ..Default::default()
             });
         }
         Self()
