@@ -194,12 +194,22 @@ impl ExtendedService {
         self.ensure_is_admin();
         self.get_mut().burners.remove(&from);
     }
-    pub fn reserve_capacity(&mut self, additionally_for_balances: u128, additionally_for_allowances: u128, additionally_for_token_metadata: u128, additionally_for_owners: u128 ) {
+    pub fn reserve_capacity(
+        &mut self,
+        additionally_for_balances: u128,
+        additionally_for_allowances: u128,
+        additionally_for_token_metadata: u128,
+        additionally_for_owners: u128,
+    ) {
         self.ensure_is_admin();
         Storage::balances().reserve(additionally_for_balances as usize);
         Storage::allowances().reserve(additionally_for_allowances as usize);
-        self.get_mut().token_metadata.reserve(additionally_for_token_metadata as usize);
-        self.get_mut().owners.reserve(additionally_for_owners as usize);
+        self.get_mut()
+            .token_metadata
+            .reserve(additionally_for_token_metadata as usize);
+        self.get_mut()
+            .owners
+            .reserve(additionally_for_owners as usize);
     }
 
     pub fn minters(&self) -> Vec<ActorId> {

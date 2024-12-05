@@ -119,7 +119,11 @@ impl ExtendedService {
         self.ensure_is_admin();
         self.get_mut().burners.remove(&from);
     }
-    pub fn reserve_capacity(&mut self, additionally_for_balances: u128, additionally_for_allowances: u128) {
+    pub fn reserve_capacity(
+        &mut self,
+        additionally_for_balances: u128,
+        additionally_for_allowances: u128,
+    ) {
         self.ensure_is_admin();
         Storage::balances().reserve(additionally_for_balances as usize);
         Storage::allowances().reserve(additionally_for_allowances as usize);
