@@ -33,6 +33,10 @@ impl Storage {
         let storage = unsafe { STORAGE.as_mut().expect("Storage is not initialized") };
         &mut storage.balances
     }
+    pub fn allowances() -> &'static mut HashMap<(ActorId, ActorId), U256> {
+        let storage = unsafe { STORAGE.as_mut().expect("Storage is not initialized") };
+        &mut storage.allowances
+    }
     pub fn total_supply() -> &'static mut U256 {
         let storage = unsafe { STORAGE.as_mut().expect("Storage is not initialized") };
         &mut storage.total_supply
@@ -67,6 +71,8 @@ impl Service {
     pub fn seed(name: String, symbol: String, decimals: u8) -> Self {
         unsafe {
             STORAGE = Some(Storage {
+                balances: HashMap::with_capacity(u16::MAX as usize),
+                allowances: HashMap::with_capacity(u16::MAX as usize),
                 meta: Metadata {
                     name,
                     symbol,
