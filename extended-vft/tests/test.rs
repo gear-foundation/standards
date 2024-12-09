@@ -1,12 +1,12 @@
-use std::mem;
 use extended_vft_client::{
     traits::{ExtendedVftFactory, Vft},
     ExtendedVftFactory as Factory, Vft as VftClient,
 };
 use sails_rs::calls::*;
 use sails_rs::collections::HashMap;
-use sails_rs::{ActorId, U256};
 use sails_rs::gtest::{calls::*, System};
+use sails_rs::{ActorId, U256};
+use std::mem;
 
 pub const ADMIN_ID: u64 = 10;
 pub const USER_ID: [u64; 2] = [11, 12];
@@ -264,7 +264,6 @@ async fn test_memory_allocation() {
     let mut user_id: u64 = 11;
     let mut map: HashMap<ActorId, U256> = HashMap::with_capacity(u16::MAX as usize);
     loop {
-
         map.insert(user_id.into(), 10.into());
         client
             .mint(user_id.into(), 10.into())
@@ -293,14 +292,11 @@ async fn test_memory_allocation() {
             }
         }
         user_id += 1;
-    
     }
-
-
 }
 
 fn hash_map_memory_usage<K, V>(map: &HashMap<K, V>) -> usize {
-    let num_buckets = map.capacity(); 
+    let num_buckets = map.capacity();
     let static_size = mem::size_of::<HashMap<K, V>>();
     let bucket_size = mem::size_of::<(K, V)>() * num_buckets;
     static_size + bucket_size
