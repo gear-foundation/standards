@@ -139,7 +139,7 @@ impl ExtendedService {
     pub fn admins(&self) -> Vec<ActorId> {
         self.get().admins.clone().into_iter().collect()
     }
-    
+
     pub fn balances_capacity(&self) -> u128 {
         Storage::balances().capacity() as u128
     }
