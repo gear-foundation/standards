@@ -1,5 +1,5 @@
 #![allow(static_mut_refs)]
-use gstd::msg;
+use gstd::{debug, exec, msg};
 use sails_rs::{collections::HashSet, gstd::service, prelude::*};
 mod funcs;
 use crate::services;
@@ -124,9 +124,11 @@ impl ExtendedService {
         additionally_for_balances: u128,
         additionally_for_allowances: u128,
     ) {
+        debug!("BEFORE: GAS = {:?}", exec::gas_available());
         self.ensure_is_admin();
         Storage::balances().reserve(additionally_for_balances as usize);
         Storage::allowances().reserve(additionally_for_allowances as usize);
+        debug!("AFTER: GAS = {:?}", exec::gas_available());
     }
     pub fn minters(&self) -> Vec<ActorId> {
         self.get().minters.clone().into_iter().collect()
