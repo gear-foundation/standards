@@ -47,8 +47,8 @@ impl ExtendedService {
         let admin = msg::source();
         unsafe {
             EXTENDED_STORAGE = Some(ExtendedStorage {
-                token_metadata: HashMap::new(),
-                owners: HashMap::new(),
+                token_metadata: HashMap::with_capacity(u16::MAX as usize),
+                owners: HashMap::with_capacity(u16::MAX as usize),
                 admins: [admin].into(),
                 minters: [admin].into(),
                 burners: [admin].into(),
@@ -194,6 +194,24 @@ impl ExtendedService {
         self.ensure_is_admin();
         self.get_mut().burners.remove(&from);
     }
+    pub fn reserve_capacity(
+        &mut self,
+        additionally_for_balances: u128,
+        additionally_for_allowances: u128,
+        additionally_for_token_metadata: u128,
+        additionally_for_owners: u128,
+    ) {
+        self.ensure_is_admin();
+        Storage::balances().reserve(additionally_for_balances as usize);
+        Storage::allowances().reserve(additionally_for_allowances as usize);
+        self.get_mut()
+            .token_metadata
+            .reserve(additionally_for_token_metadata as usize);
+        self.get_mut()
+            .owners
+            .reserve(additionally_for_owners as usize);
+    }
+
     pub fn minters(&self) -> Vec<ActorId> {
         self.get().minters.clone().into_iter().collect()
     }
@@ -204,6 +222,22 @@ impl ExtendedService {
 
     pub fn admins(&self) -> Vec<ActorId> {
         self.get().admins.clone().into_iter().collect()
+    }
+
+    pub fn balances_capacity(&self) -> u128 {
+        Storage::balances().capacity() as u128
+    }
+
+    pub fn allowances_capacity(&self) -> u128 {
+        Storage::allowances().capacity() as u128
+    }
+
+    pub fn token_metadata_capacity(&self) -> u128 {
+        self.get().token_metadata.capacity() as u128
+    }
+
+    pub fn owners_capacity(&self) -> u128 {
+        self.get().owners.capacity() as u128
     }
 }
 
