@@ -25,9 +25,9 @@ publish = false
 gstd = "=1.7.0"
 gclient = "=1.7.0"
 gear-core = "=1.7.0"
-sails-rs = "=0.7.0"
-sails-idl-gen = "=0.7.0"
-sails-client-gen = "=0.7.0"
+sails-rs = "=0.7.1"
+sails-idl-gen = "=0.7.1"
+sails-client-gen = "=0.7.1"
 log = "*"
 env_logger = "*"
 tokio = { version = "1.41", features = ["rt", "macros"] }

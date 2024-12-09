@@ -223,6 +223,22 @@ impl ExtendedService {
     pub fn admins(&self) -> Vec<ActorId> {
         self.get().admins.clone().into_iter().collect()
     }
+
+    pub fn balances_capacity(&self) -> u128 {
+        Storage::balances().capacity() as u128
+    }
+
+    pub fn allowances_capacity(&self) -> u128 {
+        Storage::allowances().capacity() as u128
+    }
+
+    pub fn token_metadata_capacity(&self) -> u128 {
+        self.get().token_metadata.capacity() as u128
+    }
+
+    pub fn owners_capacity(&self) -> u128 {
+        self.get().owners.capacity() as u128
+    }
 }
 
 impl ExtendedService {

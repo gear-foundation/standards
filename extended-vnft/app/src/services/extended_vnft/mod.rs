@@ -192,6 +192,18 @@ impl ExtendedService {
             })
             .collect()
     }
+    pub fn owner_by_id_capacity(&self) -> u128 {
+        Storage::owner_by_id().capacity() as u128
+    }
+    pub fn tokens_for_owner_capacity(&self) -> u128 {
+        Storage::tokens_for_owner().capacity() as u128
+    }
+    pub fn token_approvals_capacity(&self) -> u128 {
+        Storage::token_approvals().capacity() as u128
+    }
+    pub fn token_metadata_by_id_capacity(&self) -> u128 {
+        self.get().token_metadata_by_id.capacity() as u128
+    }
 }
 
 impl ExtendedService {
