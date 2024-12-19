@@ -22,12 +22,19 @@ edition = "2021"
 publish = false
 
 [workspace.dependencies]
-gstd = "=1.7.0"
-gclient = "=1.7.0"
-gear-core = "=1.7.0"
-sails-rs = "=0.7.1"
-sails-idl-gen = "=0.7.1"
-sails-client-gen = "=0.7.1"
+gstd = { git = "https://github.com/gear-tech/gear", rev = "a967e294eb8f3b55c8cf4caa3b8036d155dfde23" }
+gclient = { git = "https://github.com/gear-tech/gear", rev = "a967e294eb8f3b55c8cf4caa3b8036d155dfde23" }
+gear-core = { git = "https://github.com/gear-tech/gear", rev = "a967e294eb8f3b55c8cf4caa3b8036d155dfde23" }
+
+sails-rs = { path = "../sails/rs", package = "sails-rs" }
+sails-idl-gen = { path = "../sails/rs/idl-gen", package = "sails-idl-gen" }
+sails-client-gen = { path = "../sails/rs/client-gen", package = "sails-client-gen" }
+# gstd = "=1.7.0"
+# gclient = "=1.7.0"
+# gear-core = "=1.7.0"
+# sails-rs = "=0.7.1"
+# sails-idl-gen = "=0.7.1"
+# sails-client-gen = "=0.7.1"
 log = "*"
 env_logger = "*"
 tokio = { version = "1.41", features = ["rt", "macros"] }

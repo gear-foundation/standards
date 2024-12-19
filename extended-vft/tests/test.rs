@@ -3,7 +3,10 @@ use extended_vft_client::{
     ExtendedVftFactory as Factory, Vft as VftClient,
 };
 use sails_rs::calls::*;
+use sails_rs::collections::HashMap;
 use sails_rs::gtest::{calls::*, System};
+use sails_rs::{ActorId, U256};
+use std::mem;
 
 pub const ADMIN_ID: u64 = 10;
 pub const USER_ID: [u64; 2] = [11, 12];
@@ -236,4 +239,86 @@ async fn test_grant_role() {
         .unwrap();
     let burners = client.burners().recv(extended_vft_id).await.unwrap();
     assert_eq!(burners, vec![ADMIN_ID.into()]);
+}
+
+#[tokio::test]
+async fn test_memory_allocation() {
+    let system = System::new();
+    system.init_logger();
+    system.mint_to(ADMIN_ID, 1_000_000_000_000_000_000);
+
+    let program_space = GTestRemoting::new(system, ADMIN_ID.into());
+    let code_id = program_space
+        .system()
+        .submit_code_file("../target/wasm32-unknown-unknown/release/extended_vft.opt.wasm");
+
+    let extended_vft_factory = Factory::new(program_space.clone());
+    let extended_vft_id = extended_vft_factory
+        .new("name".to_string(), "symbol".to_string(), 10)
+        .send_recv(code_id, "123")
+        .await
+        .unwrap();
+
+    let mut client = VftClient::new(program_space.clone());
+
+    let mut user_id: u64 = 11;
+
+    let key_size = mem::size_of::<ActorId>();
+    let value_size = mem::size_of::<U256>();
+    let entry_size = key_size + value_size;
+
+    let mut balances_capacity = client
+        .balances_capacity()
+        .recv(extended_vft_id)
+        .await
+        .unwrap();
+
+    let balances_capacity_in_bytes = balances_capacity as usize * entry_size;
+
+    println!("Balances capacity (elements): {:?}", balances_capacity);
+    println!(
+        "Balances capacity (bytes): {:?}",
+        balances_capacity_in_bytes
+    );
+
+    loop {
+        client
+            .mint(user_id.into(), 10.into())
+            .send_recv(extended_vft_id)
+            .await
+            .unwrap();
+        if user_id % 25_000 == 0 {
+            println!("\nUSER ID {:?}", user_id);
+
+            if user_id as u128 + 30_000 > balances_capacity {
+                client
+                    .reserve_capacity(100_000 as u128, 0)
+                    .send_recv(extended_vft_id)
+                    .await
+                    .unwrap();
+
+                balances_capacity = client
+                    .balances_capacity()
+                    .recv(extended_vft_id)
+                    .await
+                    .unwrap();
+            
+                let balances_capacity_in_bytes = balances_capacity as usize * entry_size;
+            
+                println!("Balances capacity (elements): {:?}", balances_capacity);
+                println!(
+                    "Balances capacity (bytes): {:?}",
+                    balances_capacity_in_bytes
+                );
+            }
+        }
+        user_id += 1;
+    }
+}
+
+fn hash_map_memory_usage<K, V>(map: &HashMap<K, V>) -> usize {
+    let num_buckets = map.capacity();
+    let static_size = mem::size_of::<HashMap<K, V>>();
+    let bucket_size = mem::size_of::<(K, V)>() * num_buckets;
+    static_size + bucket_size
 }
