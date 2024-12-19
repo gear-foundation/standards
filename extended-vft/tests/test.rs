@@ -259,36 +259,41 @@ async fn test_memory_allocation() {
         .await
         .unwrap();
 
-    let mut client = VftClient::new(program_space);
+    let mut client = VftClient::new(program_space.clone());
 
     let mut user_id: u64 = 11;
-    let mut map: HashMap<ActorId, U256> = HashMap::with_capacity(u16::MAX as usize);
+
+    let key_size = mem::size_of::<ActorId>();
+    let value_size = mem::size_of::<U256>();
+    let entry_size = key_size + value_size;
+
     loop {
-        map.insert(user_id.into(), 10.into());
         client
             .mint(user_id.into(), 10.into())
             .send_recv(extended_vft_id)
             .await
             .unwrap();
-        if user_id % 10_000 == 0 {
-            let memory_usage = hash_map_memory_usage(&map);
+        if user_id % 25_000 == 0 {
             println!("\nUSER ID {:?}", user_id);
-            println!("Memory usage of HashMap: {:?} bytes", memory_usage);
-
             let balances_capacity = client
                 .balances_capacity()
                 .recv(extended_vft_id)
                 .await
                 .unwrap();
 
-            println!("Balances capacity {:?}", balances_capacity);
+            let balances_capacity_in_bytes = balances_capacity as usize * entry_size;
+
+            println!("Balances capacity (elements): {:?}", balances_capacity);
+            println!(
+                "Balances capacity (bytes): {:?}",
+                balances_capacity_in_bytes
+            );
             if user_id as u128 + 30_000 > balances_capacity {
                 client
                     .reserve_capacity(100_000 as u128, 0)
                     .send_recv(extended_vft_id)
                     .await
                     .unwrap();
-                map.reserve(100_000 as usize);
             }
         }
         user_id += 1;

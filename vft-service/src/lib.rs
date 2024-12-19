@@ -71,7 +71,7 @@ impl Service {
     pub fn seed(name: String, symbol: String, decimals: u8) -> Self {
         unsafe {
             STORAGE = Some(Storage {
-                balances: HashMap::with_capacity(10_000_000_usize),
+                balances: HashMap::with_capacity(u16::MAX as usize),
                 allowances: HashMap::with_capacity(u16::MAX as usize),
                 meta: Metadata {
                     name,
