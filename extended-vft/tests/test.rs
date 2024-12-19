@@ -267,6 +267,20 @@ async fn test_memory_allocation() {
     let value_size = mem::size_of::<U256>();
     let entry_size = key_size + value_size;
 
+    let mut balances_capacity = client
+        .balances_capacity()
+        .recv(extended_vft_id)
+        .await
+        .unwrap();
+
+    let balances_capacity_in_bytes = balances_capacity as usize * entry_size;
+
+    println!("Balances capacity (elements): {:?}", balances_capacity);
+    println!(
+        "Balances capacity (bytes): {:?}",
+        balances_capacity_in_bytes
+    );
+
     loop {
         client
             .mint(user_id.into(), 10.into())
@@ -275,25 +289,27 @@ async fn test_memory_allocation() {
             .unwrap();
         if user_id % 25_000 == 0 {
             println!("\nUSER ID {:?}", user_id);
-            let balances_capacity = client
-                .balances_capacity()
-                .recv(extended_vft_id)
-                .await
-                .unwrap();
 
-            let balances_capacity_in_bytes = balances_capacity as usize * entry_size;
-
-            println!("Balances capacity (elements): {:?}", balances_capacity);
-            println!(
-                "Balances capacity (bytes): {:?}",
-                balances_capacity_in_bytes
-            );
             if user_id as u128 + 30_000 > balances_capacity {
                 client
                     .reserve_capacity(100_000 as u128, 0)
                     .send_recv(extended_vft_id)
                     .await
                     .unwrap();
+
+                balances_capacity = client
+                    .balances_capacity()
+                    .recv(extended_vft_id)
+                    .await
+                    .unwrap();
+            
+                let balances_capacity_in_bytes = balances_capacity as usize * entry_size;
+            
+                println!("Balances capacity (elements): {:?}", balances_capacity);
+                println!(
+                    "Balances capacity (bytes): {:?}",
+                    balances_capacity_in_bytes
+                );
             }
         }
         user_id += 1;
