@@ -92,7 +92,7 @@ impl Service {
                 token_id,
             )
         });
-        self.notify_on(Event::Approval {
+        self.emit_event(Event::Approval {
             owner,
             approved,
             token_id,
@@ -113,7 +113,7 @@ impl Service {
             )
         });
 
-        self.notify_on(Event::Transfer {
+        self.emit_event(Event::Transfer {
             from: source,
             to,
             token_id,
@@ -135,7 +135,7 @@ impl Service {
             )
         });
 
-        self.notify_on(Event::Transfer { from, to, token_id })
+        self.emit_event(Event::Transfer { from, to, token_id })
             .expect("Notification Error");
     }
 

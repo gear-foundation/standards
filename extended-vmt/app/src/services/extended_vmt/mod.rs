@@ -105,7 +105,7 @@ impl ExtendedService {
                 vec![token_metadata],
             )
         });
-        self.notify_on(event).expect("Notification Error");
+        self.emit_event(event).expect("Notification Error");
     }
 
     pub fn mint_batch(
@@ -130,7 +130,7 @@ impl ExtendedService {
                 token_metadata,
             )
         });
-        self.notify_on(event).expect("Notification Error");
+        self.emit_event(event).expect("Notification Error");
     }
 
     pub fn burn(&mut self, from: ActorId, id: TokenId, amount: U256) {
@@ -148,7 +148,7 @@ impl ExtendedService {
                 vec![amount],
             )
         });
-        self.notify_on(event).expect("Notification Error");
+        self.emit_event(event).expect("Notification Error");
     }
 
     pub fn burn_batch(&mut self, from: ActorId, ids: Vec<TokenId>, amounts: Vec<U256>) {
@@ -166,7 +166,7 @@ impl ExtendedService {
                 amounts,
             )
         });
-        self.notify_on(event).expect("Notification Error");
+        self.emit_event(event).expect("Notification Error");
     }
 
     pub fn grant_admin_role(&mut self, to: ActorId) {
