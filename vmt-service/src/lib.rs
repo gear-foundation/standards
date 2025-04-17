@@ -96,7 +96,7 @@ impl Service {
         let storage = Storage::get_mut();
         let mutated = utils::panicking(move || funcs::approve(&mut storage.allowances, owner, to));
         if mutated {
-            self.notify_on(Event::Approval { from: owner, to })
+            self.emit_event(Event::Approval { from: owner, to })
                 .expect("Notification Error");
         }
 
@@ -120,7 +120,7 @@ impl Service {
             )
         });
 
-        self.notify_on(event).expect("Notification Error");
+        self.emit_event(event).expect("Notification Error");
     }
 
     /// Transfers multiple tokens in batch from one account (`from`) to another (`to`).
@@ -146,7 +146,7 @@ impl Service {
             )
         });
 
-        self.notify_on(event).expect("Notification Error");
+        self.emit_event(event).expect("Notification Error");
     }
 
     /// Checks if a specific operator (`operator`) is approved to transfer tokens on behalf of `account`.

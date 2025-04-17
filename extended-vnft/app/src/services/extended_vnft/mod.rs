@@ -102,7 +102,7 @@ impl ExtendedService {
                 token_metadata.clone(),
             )
         });
-        self.notify_on(Event::Minted { to, token_metadata })
+        self.emit_event(Event::Minted { to, token_metadata })
             .expect("Notification Error");
     }
 
@@ -119,7 +119,7 @@ impl ExtendedService {
                 token_id,
             )
         });
-        self.notify_on(Event::Burned { from, token_id })
+        self.emit_event(Event::Burned { from, token_id })
             .expect("Notification Error");
     }
 

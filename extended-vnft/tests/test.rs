@@ -12,14 +12,14 @@ pub const USER_ID: [u64; 2] = [11, 12];
 async fn test_basic_function() {
     let system = System::new();
     system.init_logger();
-    system.mint_to(ADMIN_ID, 100_000_000_000_000);
-    system.mint_to(USER_ID[0], 100_000_000_000_000);
-    system.mint_to(USER_ID[1], 100_000_000_000_000);
+    system.mint_to(ADMIN_ID, 1_000_000_000_000_000);
+    system.mint_to(USER_ID[0], 1_000_000_000_000_000);
+    system.mint_to(USER_ID[1], 1_000_000_000_000_000);
     let program_space = GTestRemoting::new(system, ADMIN_ID.into());
 
     let code_id = program_space
         .system()
-        .submit_code_file("../target/wasm32-unknown-unknown/release/extended_vnft.opt.wasm");
+        .submit_code_file("../target/wasm32-gear/release/extended_vnft.opt.wasm");
 
     let extended_vnft_factory = Factory::new(program_space.clone());
     let extended_vnft_id = extended_vnft_factory
@@ -125,16 +125,16 @@ async fn test_basic_function() {
 async fn test_grant_role() {
     let system = System::new();
     system.init_logger();
-    system.mint_to(ADMIN_ID, 100_000_000_000_000);
-    system.mint_to(USER_ID[0], 100_000_000_000_000);
-    system.mint_to(USER_ID[1], 100_000_000_000_000);
+    system.mint_to(ADMIN_ID, 1_000_000_000_000_000);
+    system.mint_to(USER_ID[0], 1_000_000_000_000_000);
+    system.mint_to(USER_ID[1], 1_000_000_000_000_000);
     let program_space = GTestRemoting::new(system, ADMIN_ID.into());
 
     let mut client = VftClient::new(program_space.clone());
 
     let code_id = program_space
         .system()
-        .submit_code_file("../target/wasm32-unknown-unknown/release/extended_vnft.opt.wasm");
+        .submit_code_file("../target/wasm32-gear/release/extended_vnft.opt.wasm");
 
     let extended_vft_factory = Factory::new(program_space.clone());
     let extended_vft_id = extended_vft_factory

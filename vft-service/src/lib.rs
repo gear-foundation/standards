@@ -91,7 +91,7 @@ impl Service {
         let mutated = funcs::approve(&mut storage.allowances, owner, spender, value);
 
         if mutated {
-            self.notify_on(Event::Approval {
+            self.emit_event(Event::Approval {
                 owner,
                 spender,
                 value,
@@ -109,7 +109,7 @@ impl Service {
             utils::panicking(move || funcs::transfer(&mut storage.balances, from, to, value));
 
         if mutated {
-            self.notify_on(Event::Transfer { from, to, value })
+            self.emit_event(Event::Transfer { from, to, value })
                 .expect("Notification Error");
         }
 
@@ -131,7 +131,7 @@ impl Service {
         });
 
         if mutated {
-            self.notify_on(Event::Transfer { from, to, value })
+            self.emit_event(Event::Transfer { from, to, value })
                 .expect("Notification Error");
         }
 
