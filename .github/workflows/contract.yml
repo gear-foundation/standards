@@ -51,8 +51,8 @@ jobs:
     - name: Prepare artifacts directory
       run: |
         mkdir -p artifacts
-        cp target/wasm32-unknown-unknown/release/*.wasm artifacts/
-        cp target/wasm32-unknown-unknown/release/*.idl artifacts/
+        cp target/wasm32-gear/release/*.wasm artifacts/
+        cp target/wasm32-gear/release/*.idl artifacts/
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
