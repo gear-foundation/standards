@@ -148,7 +148,7 @@ async fn test_grant_role() {
     // try minter role
     let res = client
         .mint(USER_ID[0].into(), 1_000.into())
-        .with_args(GTestArgs::new(USER_ID[0].into()))
+        .with_args(|args| args.with_actor_id(USER_ID[0].into()))
         .send_recv(extended_vft_id)
         .await;
     assert!(res.is_err());
@@ -163,7 +163,7 @@ async fn test_grant_role() {
     assert!(minters.contains(&USER_ID[0].into()));
     let res = client
         .mint(USER_ID[0].into(), 1_000.into())
-        .with_args(GTestArgs::new(USER_ID[0].into()))
+        .with_args(|args| args.with_actor_id(USER_ID[0].into()))
         .send_recv(extended_vft_id)
         .await
         .unwrap();
@@ -178,7 +178,7 @@ async fn test_grant_role() {
     // try burner role
     let res = client
         .burn(USER_ID[0].into(), 1_000.into())
-        .with_args(GTestArgs::new(USER_ID[0].into()))
+        .with_args(|args| args.with_actor_id(USER_ID[0].into()))
         .send_recv(extended_vft_id)
         .await;
     assert!(res.is_err());
@@ -193,7 +193,7 @@ async fn test_grant_role() {
     assert!(burners.contains(&USER_ID[0].into()));
     let res = client
         .burn(USER_ID[0].into(), 1_000.into())
-        .with_args(GTestArgs::new(USER_ID[0].into()))
+        .with_args(|args| args.with_actor_id(USER_ID[0].into()))
         .send_recv(extended_vft_id)
         .await
         .unwrap();
