@@ -1,5 +1,5 @@
 use gclient::GearApi;
-use gear_core::ids::{MessageId, ProgramId};
+use gear_core::ids::MessageId;
 use sails_rs::{ActorId, Encode};
 
 pub const USERS_STR: &[&str] = &["//John", "//Mike", "//Dan"];
@@ -38,7 +38,7 @@ pub async fn get_new_client(api: &GearApi, name: &str) -> GearApi {
             .encode()
             .as_slice()
             .try_into()
-            .expect("Unexpected invalid `ProgramId`."),
+            .expect("Unexpected invalid `ActorId`."),
         amount,
     )
     .await
@@ -47,7 +47,7 @@ pub async fn get_new_client(api: &GearApi, name: &str) -> GearApi {
     api.clone().with(name).expect("Unable to change signer.")
 }
 
-pub async fn init(api: &GearApi) -> (MessageId, ProgramId) {
+pub async fn init(api: &GearApi) -> (MessageId, ActorId) {
     let constructor = ("Name".to_string(), "Symbol".to_string(), 10_u8);
     let request = ["New".encode(), constructor.encode()].concat();
 
