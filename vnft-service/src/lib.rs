@@ -44,6 +44,7 @@ impl Storage {
     }
 }
 
+#[event]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, TypeInfo)]
 pub enum Event {
     Transfer {
@@ -59,9 +60,13 @@ pub enum Event {
 }
 
 #[derive(Clone)]
-pub struct Service();
+pub struct Service;
 
 impl Service {
+    pub fn new() -> Self {
+        Self
+    }
+    
     pub fn init(name: String, symbol: String) -> Self {
         unsafe {
             STORAGE = Some(Storage {
@@ -70,16 +75,14 @@ impl Service {
                 ..Default::default()
             });
         }
-        Self()
+        Self
     }
 }
 
 #[service(events = Event)]
 impl Service {
-    pub fn new() -> Self {
-        Self()
-    }
 
+    #[export]
     pub fn approve(&mut self, approved: ActorId, token_id: TokenId) {
         let source = msg::source();
         let owner = funcs::owner_of(&Storage::get().owner_by_id, token_id);
@@ -100,6 +103,7 @@ impl Service {
         .expect("Notification Error");
     }
 
+    #[export]
     pub fn transfer(&mut self, to: ActorId, token_id: TokenId) {
         let source = msg::source();
         utils::panicking(move || {
@@ -121,6 +125,7 @@ impl Service {
         .expect("Notification Error");
     }
 
+    #[export]
     pub fn transfer_from(&mut self, from: ActorId, to: ActorId, token_id: TokenId) {
         let source = msg::source();
         utils::panicking(move || {
@@ -139,12 +144,17 @@ impl Service {
             .expect("Notification Error");
     }
 
+    #[export]
     pub fn balance_of(&self, owner: ActorId) -> U256 {
         funcs::balance_of(&Storage::get().tokens_for_owner, owner)
     }
+
+    #[export]
     pub fn owner_of(&self, token_id: TokenId) -> ActorId {
         funcs::owner_of(&Storage::get().owner_by_id, token_id)
     }
+
+    #[export]
     pub fn get_approved(&self, token_id: TokenId) -> ActorId {
         Storage::get()
             .token_approvals
@@ -152,10 +162,14 @@ impl Service {
             .copied()
             .unwrap_or_else(ActorId::zero)
     }
+
+    #[export]
     pub fn name(&self) -> &'static str {
         let storage = Storage::get();
         &storage.name
     }
+
+    #[export]
     pub fn symbol(&self) -> &'static str {
         let storage = Storage::get();
         &storage.symbol

@@ -50,6 +50,7 @@ pub struct Metadata {
     pub decimals: u8,
 }
 
+#[event]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, TypeInfo)]
 pub enum Event {
     Approval {
@@ -65,10 +66,13 @@ pub enum Event {
 }
 
 #[derive(Clone)]
-pub struct Service();
+pub struct Service;
 
 impl Service {
-    pub fn seed(name: String, symbol: String, decimals: u8) -> Self {
+    pub fn new() -> Self {
+        Self
+    }
+    pub fn init(name: String, symbol: String, decimals: u8) -> Self {
         unsafe {
             STORAGE = Some(Storage {
                 meta: Metadata {
@@ -79,18 +83,15 @@ impl Service {
                 ..Default::default()
             });
         }
-        Self()
+        Self
     }
 }
 
 #[service(events = Event)]
 impl Service {
-    pub fn new() -> Self {
-        Self()
-    }
-
     /// Approves an `ActorId` (account) to transfer tokens on behalf of the owner (sender).
     /// If the approval is successful, it emits an `Approval` event.
+    #[export]
     pub fn approve(&mut self, to: ActorId) -> bool {
         let owner = msg::source();
         let storage = Storage::get_mut();
@@ -105,6 +106,7 @@ impl Service {
 
     /// Transfers tokens from one account (`from`) to another (`to`) if the sender is allowed.
     /// Emits a `Transfer` event after a successful transfer.
+    #[export]
     pub fn transfer_from(&mut self, from: ActorId, to: ActorId, id: TokenId, amount: U256) {
         let msg_src = msg::source();
         let storage = Storage::get_mut();
@@ -125,6 +127,7 @@ impl Service {
 
     /// Transfers multiple tokens in batch from one account (`from`) to another (`to`).
     /// This method transfers multiple token IDs and amounts simultaneously.
+    #[export]
     pub fn batch_transfer_from(
         &mut self,
         from: ActorId,
@@ -151,18 +154,21 @@ impl Service {
 
     /// Checks if a specific operator (`operator`) is approved to transfer tokens on behalf of `account`.
     /// Returns true if the operator is approved.
+    #[export]
     pub fn is_approved(&self, account: ActorId, operator: ActorId) -> bool {
         let storage = Storage::get();
         funcs::is_approved(&storage.allowances, &account, &operator)
     }
 
     /// Returns the token balance of an account (`account`) for a specific token ID (`id`).
+    #[export]
     pub fn balance_of(&self, account: ActorId, id: TokenId) -> U256 {
         let storage = Storage::get();
         funcs::get_balance(&storage.balances, &account, &id)
     }
 
     /// Returns token account balances (`accounts`) for specific token identifiers (`ids`).
+    #[export]
     pub fn balance_of_batch(&self, accounts: Vec<ActorId>, ids: Vec<TokenId>) -> Vec<U256> {
         let storage = Storage::get();
 
@@ -180,24 +186,28 @@ impl Service {
     }
 
     /// Returns the number of decimal places used for this token.
+    #[export]
     pub fn decimals(&self) -> &'static u8 {
         let storage = Storage::get();
         &storage.meta.decimals
     }
 
     /// Returns the name of the token.
+    #[export]
     pub fn name(&self) -> &'static str {
         let storage = Storage::get();
         &storage.meta.name
     }
 
     /// Returns the symbol of the token.
+    #[export]
     pub fn symbol(&self) -> &'static str {
         let storage = Storage::get();
         &storage.meta.symbol
     }
 
     /// Returns the total supply of tokens in circulation.
+    #[export]
     pub fn total_supply(&self) -> Vec<(TokenId, U256)> {
         let storage = Storage::get();
         storage.total_supply.clone().into_iter().collect()

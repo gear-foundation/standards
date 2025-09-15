@@ -65,12 +65,11 @@ pub enum Event {
 pub struct Service;
 
 impl Service {
-
     pub fn new() -> Self {
         Self
     }
-    
-    pub fn seed(name: String, symbol: String, decimals: u8) -> Self {
+
+    pub fn init(name: String, symbol: String, decimals: u8) -> Self {
         unsafe {
             STORAGE = Some(Storage {
                 meta: Metadata {

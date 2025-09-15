@@ -9,7 +9,7 @@ pub struct ExtendedVmtProgram(());
 #[program]
 impl ExtendedVmtProgram {
     pub fn new(name: String, symbol: String, decimals: u8) -> Self {
-        ExtendedService::seed(name, symbol, decimals);
+        ExtendedService::init(name, symbol, decimals);
         Self(())
     }
 

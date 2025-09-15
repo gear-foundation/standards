@@ -34,7 +34,7 @@ impl ExtendedService {
         }
     }
 
-    pub fn seed(name: String, symbol: String, decimals: u8) -> Self {
+    pub fn init(name: String, symbol: String, decimals: u8) -> Self {
         let admin = msg::source();
         unsafe {
             EXTENDED_STORAGE = Some(ExtendedStorage {
@@ -44,7 +44,7 @@ impl ExtendedService {
             });
         };
         ExtendedService {
-            vft: <VftService>::seed(name, symbol, decimals),
+            vft: <VftService>::init(name, symbol, decimals),
         }
     }
 
@@ -162,11 +162,5 @@ impl ExtendedService {
         if !self.get().admins.contains(&msg::source()) {
             panic!("Not admin")
         };
-    }
-}
-
-impl AsRef<VftService> for ExtendedService {
-    fn as_ref(&self) -> &VftService {
-        &self.vft
     }
 }
