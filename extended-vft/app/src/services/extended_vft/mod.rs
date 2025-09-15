@@ -65,14 +65,13 @@ impl ExtendedService {
 }
 
 impl From<ExtendedService> for VftService {
-	fn from(value: ExtendedService) -> Self {
-		value.vft
-	}
+    fn from(value: ExtendedService) -> Self {
+        value.vft
+    }
 }
 
 #[service(extends = VftService, events = Event)]
 impl ExtendedService {
-
     #[export]
     pub fn mint(&mut self, to: ActorId, value: U256) -> bool {
         if !self.get().minters.contains(&msg::source()) {

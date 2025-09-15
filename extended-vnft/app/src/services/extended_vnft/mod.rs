@@ -89,14 +89,13 @@ impl ExtendedService {
 }
 
 impl From<ExtendedService> for VnftService {
-	fn from(value: ExtendedService) -> Self {
-		value.vnft
-	}
+    fn from(value: ExtendedService) -> Self {
+        value.vnft
+    }
 }
 
 #[service(extends = VnftService, events = Event)]
 impl ExtendedService {
-
     #[export]
     pub fn mint(&mut self, to: ActorId, token_metadata: TokenMetadata) {
         if !self.get().minters.contains(&msg::source()) {

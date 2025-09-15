@@ -66,7 +66,7 @@ impl Service {
     pub fn new() -> Self {
         Self
     }
-    
+
     pub fn init(name: String, symbol: String) -> Self {
         unsafe {
             STORAGE = Some(Storage {
@@ -81,7 +81,6 @@ impl Service {
 
 #[service(events = Event)]
 impl Service {
-
     #[export]
     pub fn approve(&mut self, approved: ActorId, token_id: TokenId) {
         let source = msg::source();

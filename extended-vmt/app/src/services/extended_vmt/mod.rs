@@ -82,14 +82,13 @@ impl ExtendedService {
 }
 
 impl From<ExtendedService> for VmtService {
-	fn from(value: ExtendedService) -> Self {
-		value.vmt
-	}
+    fn from(value: ExtendedService) -> Self {
+        value.vmt
+    }
 }
 
 #[service(extends = VmtService, events = Event)]
 impl ExtendedService {
-
     #[export]
     pub fn mint(
         &mut self,

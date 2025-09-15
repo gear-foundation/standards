@@ -86,7 +86,6 @@ impl Service {
 
 #[service(events = Event)]
 impl Service {
-    
     #[export]
     pub fn approve(&mut self, spender: ActorId, value: U256) -> bool {
         let owner = msg::source();
@@ -172,7 +171,7 @@ impl Service {
         let storage = Storage::get();
         &storage.meta.symbol
     }
-    
+
     #[export]
     pub fn total_supply(&self) -> &'static U256 {
         let storage = Storage::get();
