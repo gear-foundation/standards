@@ -81,7 +81,7 @@ You can instantiate your own token programs using the public CodeIds below. The 
 
   * Mainnet: [link](https://idea.gear-tech.io/code/0x3c902523c31f930a4169a5149ff439ec2574a6a6cebe3d6c06742bb254073566?node=wss%3A%2F%2Frpc.vara.network)
   * Testnet: [link](https://idea.gear-tech.io/code/0x3c902523c31f930a4169a5149ff439ec2574a6a6cebe3d6c06742bb254073566?node=wss%3A%2F%2Ftestnet.vara.network)
-* **Constructor**: `ExtendedVmtProgram::new(/* required params */)`
+* **Constructor**: `ExtendedVmtProgram::new(name, symbol, decimals)`
 
 #### VNFT (extended-vnft)
 
@@ -89,4 +89,4 @@ You can instantiate your own token programs using the public CodeIds below. The 
 
   * Mainnet: [link](https://idea.gear-tech.io/code/0xbba6636d3bec4f203d4ae9b58d9bc9995c7aa20344028001f22dceb43911afad?node=wss%3A%2F%2Frpc.vara.network)
   * Testnet: [link](https://idea.gear-tech.io/code/0xbba6636d3bec4f203d4ae9b58d9bc9995c7aa20344028001f22dceb43911afad?node=wss%3A%2F%2Ftestnet.vara.network)
-* **Constructor**: `ExtendedVnftProgram::new(/* required params */)`
+* **Constructor**: `ExtendedVnftProgram::new(name, symbol)`
