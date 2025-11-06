@@ -1,8 +1,7 @@
 #![allow(static_mut_refs)]
-use gstd::msg;
 use sails_rs::{
     collections::{HashMap, HashSet},
-    gstd::service,
+    gstd::{msg, service},
     prelude::*,
 };
 mod funcs;

@@ -1,6 +1,9 @@
 #![allow(static_mut_refs)]
-use gstd::msg;
-use sails_rs::{collections::HashSet, gstd::service, prelude::*};
+use sails_rs::{
+    collections::HashSet,
+    gstd::{msg, service},
+    prelude::*,
+};
 mod funcs;
 use crate::services;
 use vft_service::{Service as VftService, Storage};
