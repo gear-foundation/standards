@@ -397,7 +397,7 @@ mod tests {
         use super::*;
 
         pub fn approvals_map<const N: usize>(content: [(TokenId, ActorId); N]) -> ApprovalsMap {
-            content.into_iter().map(|(k1, v)| ((k1, v))).collect()
+            content.into_iter().map(|(k1, v)| (k1, v)).collect()
         }
 
         pub fn tokens_for_owner_map<const N: usize, const M: usize>(
@@ -405,12 +405,12 @@ mod tests {
         ) -> TokensForOwnerMap {
             content
                 .into_iter()
-                .map(|(k, v)| ((k, v.into_iter().collect())))
+                .map(|(k, v)| (k, v.into_iter().collect()))
                 .collect()
         }
 
         pub fn owner_by_id_map<const N: usize>(content: [(TokenId, ActorId); N]) -> OwnerByIdMap {
-            content.into_iter().map(|(k1, v)| ((k1, v))).collect()
+            content.into_iter().map(|(k1, v)| (k1, v)).collect()
         }
 
         pub fn alice() -> ActorId {

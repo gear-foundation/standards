@@ -9,8 +9,7 @@ extended-vnft-app = { path = "app" }
 
 [build-dependencies]
 extended-vnft-app = { path = "app" }
-sails-rs = { workspace = true, features = ["wasm-builder"] }
-sails-idl-gen.workspace = true
+sails-rs = { workspace = true, features = ["build"] }
 
 [dev-dependencies]
 extended-vnft = { path = ".", features = ["wasm-binary"] }

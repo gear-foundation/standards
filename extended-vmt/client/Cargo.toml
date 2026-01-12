@@ -4,13 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-mockall = { version = "0.12", optional = true }
 sails-rs.workspace = true
 
 [build-dependencies]
 extended-vmt-app = { path = "../app" }
-sails-client-gen.workspace = true
-sails-idl-gen.workspace = true
-
-[features]
-mocks = ["sails-rs/mockall", "dep:mockall"]
+sails-rs = { workspace = true, features = ["build"] }
