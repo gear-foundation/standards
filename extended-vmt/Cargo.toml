@@ -9,16 +9,7 @@ extended-vmt-app = { path = "app" }
 
 [build-dependencies]
 extended-vmt-app = { path = "app" }
-sails-rs = { workspace = true, features = ["wasm-builder"] }
-sails-idl-gen.workspace = true
-
-[dev-dependencies]
-extended-vmt = { path = ".", features = ["wasm-binary"] }
-extended-vmt-client = { path = "client" }
-sails-rs = { workspace = true, features = ["gtest"] }
-tokio.workspace = true
-gclient.workspace = true
-gear-core.workspace = true
+sails-rs = { workspace = true, features = ["build"] }
 
 [features]
 wasm-binary = []
