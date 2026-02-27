@@ -9,6 +9,7 @@ gstd.workspace = true
 sails-rs.workspace = true
 parity-scale-codec.workspace = true
 scale-info.workspace = true
+awesome-sails-utils = { workspace = true, features = ["gprimitives"] }
 
 [dev-dependencies]
 env_logger.workspace = true

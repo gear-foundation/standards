@@ -31,3 +31,4 @@ env_logger = "*"
 tokio = { version = "1.41", features = ["rt", "macros"] }
 scale-info = { version = "2", default-features = false }
 parity-scale-codec = { version = "3", default-features = false }
+awesome-sails-utils = { git = "https://github.com/gear-tech/awesome-sails", version = "0.2.0", default-features = false }
