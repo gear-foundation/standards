@@ -1,5 +1,5 @@
 constructor {
-  New : (name: str, symbol: str, decimals: u8);
+  New : (name: str, symbol: str, decimals: u8, balances_caps: opt vec u32, allowances_caps: opt vec u32);
 };
 
 service Vft {
@@ -7,6 +7,10 @@ service Vft {
   AllocNextAllowancesShard : () -> bool;
   /// Explicitly grow balances map
   AllocNextBalancesShard : () -> bool;
+  /// Append a new shard to allowances with the given capacity
+  AppendAllowancesShard : (cap: u32) -> null;
+  /// Append a new shard to balances with the given capacity
+  AppendBalancesShard : (cap: u32) -> null;
   /// Burn tokens
   Burn : (from: actor_id, value: u256) -> bool;
   /// Grant admin role

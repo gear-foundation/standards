@@ -24,6 +24,8 @@ pub trait ExtendedVftClientCtors {
         name: String,
         symbol: String,
         decimals: u8,
+        balances_caps: Option<Vec<u32>>,
+        allowances_caps: Option<Vec<u32>>,
     ) -> sails_rs::client::PendingCtor<ExtendedVftClientProgram, io::New, Self::Env>;
 }
 impl<E: sails_rs::client::GearEnv> ExtendedVftClientCtors
@@ -35,14 +37,16 @@ impl<E: sails_rs::client::GearEnv> ExtendedVftClientCtors
         name: String,
         symbol: String,
         decimals: u8,
+        balances_caps: Option<Vec<u32>>,
+        allowances_caps: Option<Vec<u32>>,
     ) -> sails_rs::client::PendingCtor<ExtendedVftClientProgram, io::New, Self::Env> {
-        self.pending_ctor((name, symbol, decimals))
+        self.pending_ctor((name, symbol, decimals, balances_caps, allowances_caps))
     }
 }
 
 pub mod io {
     use super::*;
-    sails_rs::io_struct_impl!(New (name: String, symbol: String, decimals: u8) -> ());
+    sails_rs::io_struct_impl!(New (name: String, symbol: String, decimals: u8, balances_caps: Option<Vec<u32>>, allowances_caps: Option<Vec<u32>>) -> ());
 }
 
 pub mod vft {
@@ -57,6 +61,16 @@ pub mod vft {
         fn alloc_next_balances_shard(
             &mut self,
         ) -> sails_rs::client::PendingCall<io::AllocNextBalancesShard, Self::Env>;
+        /// Append a new shard to allowances with the given capacity
+        fn append_allowances_shard(
+            &mut self,
+            cap: u32,
+        ) -> sails_rs::client::PendingCall<io::AppendAllowancesShard, Self::Env>;
+        /// Append a new shard to balances with the given capacity
+        fn append_balances_shard(
+            &mut self,
+            cap: u32,
+        ) -> sails_rs::client::PendingCall<io::AppendBalancesShard, Self::Env>;
         /// Burn tokens
         fn burn(
             &mut self,
@@ -161,6 +175,18 @@ pub mod vft {
             &mut self,
         ) -> sails_rs::client::PendingCall<io::AllocNextBalancesShard, Self::Env> {
             self.pending_call(())
+        }
+        fn append_allowances_shard(
+            &mut self,
+            cap: u32,
+        ) -> sails_rs::client::PendingCall<io::AppendAllowancesShard, Self::Env> {
+            self.pending_call((cap,))
+        }
+        fn append_balances_shard(
+            &mut self,
+            cap: u32,
+        ) -> sails_rs::client::PendingCall<io::AppendBalancesShard, Self::Env> {
+            self.pending_call((cap,))
         }
         fn burn(
             &mut self,
@@ -282,6 +308,8 @@ pub mod vft {
         use super::*;
         sails_rs::io_struct_impl!(AllocNextAllowancesShard () -> bool);
         sails_rs::io_struct_impl!(AllocNextBalancesShard () -> bool);
+        sails_rs::io_struct_impl!(AppendAllowancesShard (cap: u32) -> ());
+        sails_rs::io_struct_impl!(AppendBalancesShard (cap: u32) -> ());
         sails_rs::io_struct_impl!(Burn (from: ActorId, value: U256) -> bool);
         sails_rs::io_struct_impl!(GrantAdminRole (to: ActorId) -> ());
         sails_rs::io_struct_impl!(GrantBurnerRole (to: ActorId) -> ());

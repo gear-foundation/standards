@@ -49,7 +49,13 @@ impl ExtendedService {
     /// Initialization:
     /// - sets msg::source() as initial admin/minter/burner
     /// - initializes the base VFT storage (name/symbol/decimals)
-    pub fn init(name: String, symbol: String, decimals: u8) -> Self {
+    pub fn init(
+        name: String,
+        symbol: String,
+        decimals: u8,
+        balances_caps: Option<Vec<u32>>,
+        allowances_caps: Option<Vec<u32>>,
+    ) -> Self {
         let admin = msg::source();
 
         unsafe {
@@ -61,7 +67,7 @@ impl ExtendedService {
         }
 
         ExtendedService {
-            vft: VftService::init(name, symbol, decimals),
+            vft: VftService::init(name, symbol, decimals, balances_caps, allowances_caps),
         }
     }
 
@@ -94,6 +100,19 @@ impl From<ExtendedService> for VftService {
 /// `extends = VftService` exposes base VFT exports on this service
 #[service(extends = VftService, events = Event)]
 impl ExtendedService {
+    /// Append a new shard to balances with the given capacity
+    #[export]
+    pub fn append_balances_shard(&mut self, cap: u32) {
+        self.ensure_is_admin();
+        services::utils::panicking(|| Storage::balances().try_append_shard(cap as usize));
+    }
+    /// Append a new shard to allowances with the given capacity
+    #[export]
+    pub fn append_allowances_shard(&mut self, cap: u32) {
+        self.ensure_is_admin();
+        services::utils::panicking(|| Storage::allowances().try_append_shard(cap as usize));
+    }
+
     /// Explicitly grow balances map
     #[export]
     pub fn alloc_next_balances_shard(&mut self) -> bool {

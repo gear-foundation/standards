@@ -1,9 +1,9 @@
 pub mod error;
 pub mod facade;
 pub mod helpers;
+pub mod macros;
 pub mod storage;
 
-// public API of utils
 pub use error::{map_err, Error};
 pub use storage::{
     Allowance, AllowancesMap, Balance, BalancesMap, NonZeroActorId, NzAllowance, NzBalance, Result,

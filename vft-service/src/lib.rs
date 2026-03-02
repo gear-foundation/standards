@@ -93,12 +93,27 @@ impl Service {
         Self
     }
 
-    pub fn init(name: String, symbol: String, decimals: u8) -> Self {
-        // Create sharded maps with configured capacity plan (shards are initially unallocated)
-        let mut balances =
-            BalancesMap::try_new(BALANCES_CAPS.to_vec()).expect("valid balances capacities");
-        let mut allowances =
-            AllowancesMap::try_new(ALLOWANCES_CAPS.to_vec()).expect("valid allowances capacities");
+    pub fn init(
+        name: String,
+        symbol: String,
+        decimals: u8,
+        balances_caps: Option<Vec<u32>>,
+        allowances_caps: Option<Vec<u32>>,
+    ) -> Self {
+        // Create sharded maps with configured capacity
+        let mut balances = if let Some(caps) = balances_caps {
+            BalancesMap::try_new(caps.into_iter().map(|x| x as usize).collect())
+                .expect("invalid balances capacities")
+        } else {
+            BalancesMap::try_new(BALANCES_CAPS.to_vec()).expect("invalid balances capacities")
+        };
+
+        let mut allowances = if let Some(caps) = allowances_caps {
+            AllowancesMap::try_new(caps.into_iter().map(|x| x as usize).collect())
+                .expect("invalid allowances capacities")
+        } else {
+            AllowancesMap::try_new(ALLOWANCES_CAPS.to_vec()).expect("invalid allowances capacities")
+        };
 
         // Allocate first shard for each map
         // Further growth is explicit via `alloc_next_*_shard()` methods

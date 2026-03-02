@@ -16,4 +16,13 @@ env_logger.workspace = true
 
 [features]
 wasm-binary = []
+default = ["amount_80"]
+
+amount_80 = []
+amount_96 = []
+amount_128 = []
+amount_160 = []
+amount_192 = []
+amount_224 = []
+amount_256 = []
 
