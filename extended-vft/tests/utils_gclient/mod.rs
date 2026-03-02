@@ -48,7 +48,13 @@ pub async fn get_new_client(api: &GearApi, name: &str) -> GearApi {
 }
 
 pub async fn init(api: &GearApi) -> (MessageId, ActorId) {
-    let constructor = ("Name".to_string(), "Symbol".to_string(), 10_u8, None::<Vec<u32>>, None::<Vec<u32>>);
+    let constructor = (
+        "Name".to_string(),
+        "Symbol".to_string(),
+        10_u8,
+        None::<Vec<u32>>,
+        None::<Vec<u32>>,
+    );
     let request = ["New".encode(), constructor.encode()].concat();
 
     let path = "../target/wasm32-gear/release/extended_vft.opt.wasm";

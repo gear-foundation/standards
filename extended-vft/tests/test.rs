@@ -20,7 +20,13 @@ async fn test_basic_function() {
 
     let program = env
         .deploy::<extended_vft_client::ExtendedVftClientProgram>(program_code_id, b"salt".to_vec())
-        .new("name".to_string(), "symbol".to_string(), 10, None::<Vec<u32>>, None::<Vec<u32>>)
+        .new(
+            "name".to_string(),
+            "symbol".to_string(),
+            10,
+            None::<Vec<u32>>,
+            None::<Vec<u32>>,
+        )
         .await
         .unwrap();
 
@@ -90,7 +96,13 @@ async fn test_grant_role() {
 
     let program = env
         .deploy::<extended_vft_client::ExtendedVftClientProgram>(program_code_id, b"salt".to_vec())
-        .new("name".to_string(), "symbol".to_string(), 10, None::<Vec<u32>>, None::<Vec<u32>>)
+        .new(
+            "name".to_string(),
+            "symbol".to_string(),
+            10,
+            None::<Vec<u32>>,
+            None::<Vec<u32>>,
+        )
         .await
         .unwrap();
 
