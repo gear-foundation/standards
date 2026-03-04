@@ -528,6 +528,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
+name = "awesome-sails-storage"
+version = "0.2.0"
+source = "git+https://github.com/gear-tech/awesome-sails#1ec79913e969b75d016c63c4d78d8eb913eb13b9"
+
+[[package]]
+name = "awesome-sails-utils"
+version = "0.2.0"
+source = "git+https://github.com/gear-tech/awesome-sails#1ec79913e969b75d016c63c4d78d8eb913eb13b9"
+dependencies = [
+ "awesome-sails-storage",
+ "bnum",
+ "derive_more 2.1.1",
+ "gprimitives",
+ "hashbrown 0.14.5",
+ "parity-scale-codec",
+ "primitive-types 0.12.2",
+ "scale-info",
+ "thiserror 2.0.17",
+]
+
+[[package]]
 name = "backtrace"
 version = "0.3.76"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -748,6 +769,12 @@ dependencies = [
  "futures-lite",
  "piper",
 ]
+
+[[package]]
+name = "bnum"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "119771309b95163ec7aaf79810da82f7cd0599c19722d48b9c03894dca833966"
 
 [[package]]
 name = "bounded-collections"
@@ -1924,6 +1951,7 @@ dependencies = [
  "extended-vft-client",
  "gclient",
  "gear-core",
+ "gear-utils",
  "sails-rs",
  "tokio",
 ]
@@ -7835,6 +7863,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 name = "vft-service"
 version = "1.1.0"
 dependencies = [
+ "awesome-sails-utils",
  "env_logger",
  "gstd",
  "parity-scale-codec",

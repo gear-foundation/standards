@@ -24,6 +24,8 @@ pub trait ExtendedVftClientCtors {
         name: String,
         symbol: String,
         decimals: u8,
+        balances_caps: Option<Vec<u32>>,
+        allowances_caps: Option<Vec<u32>>,
     ) -> sails_rs::client::PendingCtor<ExtendedVftClientProgram, io::New, Self::Env>;
 }
 impl<E: sails_rs::client::GearEnv> ExtendedVftClientCtors
@@ -35,90 +37,165 @@ impl<E: sails_rs::client::GearEnv> ExtendedVftClientCtors
         name: String,
         symbol: String,
         decimals: u8,
+        balances_caps: Option<Vec<u32>>,
+        allowances_caps: Option<Vec<u32>>,
     ) -> sails_rs::client::PendingCtor<ExtendedVftClientProgram, io::New, Self::Env> {
-        self.pending_ctor((name, symbol, decimals))
+        self.pending_ctor((name, symbol, decimals, balances_caps, allowances_caps))
     }
 }
 
 pub mod io {
     use super::*;
-    sails_rs::io_struct_impl!(New (name: String, symbol: String, decimals: u8) -> ());
+    sails_rs::io_struct_impl!(New (name: String, symbol: String, decimals: u8, balances_caps: Option<Vec<u32>>, allowances_caps: Option<Vec<u32>>) -> ());
 }
 
 pub mod vft {
     use super::*;
     pub trait Vft {
         type Env: sails_rs::client::GearEnv;
+        /// Explicitly grow allowances map
+        fn alloc_next_allowances_shard(
+            &mut self,
+        ) -> sails_rs::client::PendingCall<io::AllocNextAllowancesShard, Self::Env>;
+        /// Explicitly grow balances map
+        fn alloc_next_balances_shard(
+            &mut self,
+        ) -> sails_rs::client::PendingCall<io::AllocNextBalancesShard, Self::Env>;
+        /// Append a new shard to allowances with the given capacity
+        fn append_allowances_shard(
+            &mut self,
+            cap: u32,
+        ) -> sails_rs::client::PendingCall<io::AppendAllowancesShard, Self::Env>;
+        /// Append a new shard to balances with the given capacity
+        fn append_balances_shard(
+            &mut self,
+            cap: u32,
+        ) -> sails_rs::client::PendingCall<io::AppendBalancesShard, Self::Env>;
+        /// Burn tokens
         fn burn(
             &mut self,
             from: ActorId,
             value: U256,
         ) -> sails_rs::client::PendingCall<io::Burn, Self::Env>;
+        /// Grant admin role
         fn grant_admin_role(
             &mut self,
             to: ActorId,
         ) -> sails_rs::client::PendingCall<io::GrantAdminRole, Self::Env>;
+        /// Grant burner role
         fn grant_burner_role(
             &mut self,
             to: ActorId,
         ) -> sails_rs::client::PendingCall<io::GrantBurnerRole, Self::Env>;
+        /// Grant minter role
         fn grant_minter_role(
             &mut self,
             to: ActorId,
         ) -> sails_rs::client::PendingCall<io::GrantMinterRole, Self::Env>;
+        /// Mint new tokens
         fn mint(
             &mut self,
             to: ActorId,
             value: U256,
         ) -> sails_rs::client::PendingCall<io::Mint, Self::Env>;
+        /// This method only works with the feature `stress-tests`.
+        /// It is necessary for quickly filling in the state in the test.
+        fn mint_range(
+            &mut self,
+            start: u64,
+            count: u32,
+            value: U256,
+        ) -> sails_rs::client::PendingCall<io::MintRange, Self::Env>;
+        /// Revoke admin role
         fn revoke_admin_role(
             &mut self,
             from: ActorId,
         ) -> sails_rs::client::PendingCall<io::RevokeAdminRole, Self::Env>;
+        /// Revoke burner role
         fn revoke_burner_role(
             &mut self,
             from: ActorId,
         ) -> sails_rs::client::PendingCall<io::RevokeBurnerRole, Self::Env>;
+        /// Revoke minter role
         fn revoke_minter_role(
             &mut self,
             from: ActorId,
         ) -> sails_rs::client::PendingCall<io::RevokeMinterRole, Self::Env>;
+        /// Sets allowance for `spender` from msg::source() (owner)
         fn approve(
             &mut self,
             spender: ActorId,
             value: U256,
         ) -> sails_rs::client::PendingCall<io::Approve, Self::Env>;
+        /// Transfers `value` from msg::source() to `to`
         fn transfer(
             &mut self,
             to: ActorId,
             value: U256,
         ) -> sails_rs::client::PendingCall<io::Transfer, Self::Env>;
+        /// Transfers `value` from `from` to `to` on behalf of msg::source() (spender)
         fn transfer_from(
             &mut self,
             from: ActorId,
             to: ActorId,
             value: U256,
         ) -> sails_rs::client::PendingCall<io::TransferFrom, Self::Env>;
+        /// Returns current admins list (unordered)
         fn admins(&self) -> sails_rs::client::PendingCall<io::Admins, Self::Env>;
+        /// Returns current burners list (unordered)
         fn burners(&self) -> sails_rs::client::PendingCall<io::Burners, Self::Env>;
+        /// Returns current minters list (unordered)
         fn minters(&self) -> sails_rs::client::PendingCall<io::Minters, Self::Env>;
+        /// Returns current allowance
         fn allowance(
             &self,
             owner: ActorId,
             spender: ActorId,
         ) -> sails_rs::client::PendingCall<io::Allowance, Self::Env>;
+        /// Allowances map stats: (len, allocated_capacity, max_capacity, free_space)
+        fn allowances_stats(&self)
+        -> sails_rs::client::PendingCall<io::AllowancesStats, Self::Env>;
+        /// Returns current balance
         fn balance_of(
             &self,
             account: ActorId,
         ) -> sails_rs::client::PendingCall<io::BalanceOf, Self::Env>;
+        /// Balances map stats: (len, allocated_capacity, max_capacity, free_space)
+        fn balances_stats(&self) -> sails_rs::client::PendingCall<io::BalancesStats, Self::Env>;
+        /// Token decimals
         fn decimals(&self) -> sails_rs::client::PendingCall<io::Decimals, Self::Env>;
+        /// Token name
         fn name(&self) -> sails_rs::client::PendingCall<io::Name, Self::Env>;
+        /// Token symbol
         fn symbol(&self) -> sails_rs::client::PendingCall<io::Symbol, Self::Env>;
+        /// Total supply
         fn total_supply(&self) -> sails_rs::client::PendingCall<io::TotalSupply, Self::Env>;
     }
     pub struct VftImpl;
     impl<E: sails_rs::client::GearEnv> Vft for sails_rs::client::Service<VftImpl, E> {
         type Env = E;
+        fn alloc_next_allowances_shard(
+            &mut self,
+        ) -> sails_rs::client::PendingCall<io::AllocNextAllowancesShard, Self::Env> {
+            self.pending_call(())
+        }
+        fn alloc_next_balances_shard(
+            &mut self,
+        ) -> sails_rs::client::PendingCall<io::AllocNextBalancesShard, Self::Env> {
+            self.pending_call(())
+        }
+        fn append_allowances_shard(
+            &mut self,
+            cap: u32,
+        ) -> sails_rs::client::PendingCall<io::AppendAllowancesShard, Self::Env> {
+            self.pending_call((cap,))
+        }
+        fn append_balances_shard(
+            &mut self,
+            cap: u32,
+        ) -> sails_rs::client::PendingCall<io::AppendBalancesShard, Self::Env> {
+            self.pending_call((cap,))
+        }
         fn burn(
             &mut self,
             from: ActorId,
@@ -150,6 +227,14 @@ pub mod vft {
             value: U256,
         ) -> sails_rs::client::PendingCall<io::Mint, Self::Env> {
             self.pending_call((to, value))
+        }
+        fn mint_range(
+            &mut self,
+            start: u64,
+            count: u32,
+            value: U256,
+        ) -> sails_rs::client::PendingCall<io::MintRange, Self::Env> {
+            self.pending_call((start, count, value))
         }
         fn revoke_admin_role(
             &mut self,
@@ -207,11 +292,19 @@ pub mod vft {
         ) -> sails_rs::client::PendingCall<io::Allowance, Self::Env> {
             self.pending_call((owner, spender))
         }
+        fn allowances_stats(
+            &self,
+        ) -> sails_rs::client::PendingCall<io::AllowancesStats, Self::Env> {
+            self.pending_call(())
+        }
         fn balance_of(
             &self,
             account: ActorId,
         ) -> sails_rs::client::PendingCall<io::BalanceOf, Self::Env> {
             self.pending_call((account,))
+        }
+        fn balances_stats(&self) -> sails_rs::client::PendingCall<io::BalancesStats, Self::Env> {
+            self.pending_call(())
         }
         fn decimals(&self) -> sails_rs::client::PendingCall<io::Decimals, Self::Env> {
             self.pending_call(())
@@ -229,11 +322,16 @@ pub mod vft {
 
     pub mod io {
         use super::*;
+        sails_rs::io_struct_impl!(AllocNextAllowancesShard () -> bool);
+        sails_rs::io_struct_impl!(AllocNextBalancesShard () -> bool);
+        sails_rs::io_struct_impl!(AppendAllowancesShard (cap: u32) -> ());
+        sails_rs::io_struct_impl!(AppendBalancesShard (cap: u32) -> ());
         sails_rs::io_struct_impl!(Burn (from: ActorId, value: U256) -> bool);
         sails_rs::io_struct_impl!(GrantAdminRole (to: ActorId) -> ());
         sails_rs::io_struct_impl!(GrantBurnerRole (to: ActorId) -> ());
         sails_rs::io_struct_impl!(GrantMinterRole (to: ActorId) -> ());
         sails_rs::io_struct_impl!(Mint (to: ActorId, value: U256) -> bool);
+        sails_rs::io_struct_impl!(MintRange (start: u64, count: u32, value: U256) -> u32);
         sails_rs::io_struct_impl!(RevokeAdminRole (from: ActorId) -> ());
         sails_rs::io_struct_impl!(RevokeBurnerRole (from: ActorId) -> ());
         sails_rs::io_struct_impl!(RevokeMinterRole (from: ActorId) -> ());
@@ -244,7 +342,9 @@ pub mod vft {
         sails_rs::io_struct_impl!(Burners () -> Vec<ActorId>);
         sails_rs::io_struct_impl!(Minters () -> Vec<ActorId>);
         sails_rs::io_struct_impl!(Allowance (owner: ActorId, spender: ActorId) -> U256);
+        sails_rs::io_struct_impl!(AllowancesStats () -> (u128,u128,u128,u128,));
         sails_rs::io_struct_impl!(BalanceOf (account: ActorId) -> U256);
+        sails_rs::io_struct_impl!(BalancesStats () -> (u128,u128,u128,u128,));
         sails_rs::io_struct_impl!(Decimals () -> u8);
         sails_rs::io_struct_impl!(Name () -> String);
         sails_rs::io_struct_impl!(Symbol () -> String);

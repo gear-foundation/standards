@@ -8,8 +8,14 @@ pub struct ExtendedVftProgram(());
 
 #[program]
 impl ExtendedVftProgram {
-    pub fn new(name: String, symbol: String, decimals: u8) -> Self {
-        ExtendedService::init(name, symbol, decimals);
+    pub fn new(
+        name: String,
+        symbol: String,
+        decimals: u8,
+        balances_caps: Option<Vec<u32>>,
+        allowances_caps: Option<Vec<u32>>,
+    ) -> Self {
+        ExtendedService::init(name, symbol, decimals, balances_caps, allowances_caps);
         Self(())
     }
 

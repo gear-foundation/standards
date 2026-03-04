@@ -7,5 +7,9 @@ edition = "2021"
 sails-rs.workspace = true
 
 [build-dependencies]
-extended-vft-app = { path = "../app" }
+extended-vft-app = { path = "../app", default-features = false }
 sails-rs = { workspace = true, features = ["build"] }
+
+[features]
+default = []
+stress-tests = ["extended-vft-app/stress-tests"]

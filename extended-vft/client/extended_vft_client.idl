@@ -1,27 +1,62 @@
 constructor {
-  New : (name: str, symbol: str, decimals: u8);
+  New : (name: str, symbol: str, decimals: u8, balances_caps: opt vec u32, allowances_caps: opt vec u32);
 };
 
 service Vft {
+  /// Explicitly grow allowances map
+  AllocNextAllowancesShard : () -> bool;
+  /// Explicitly grow balances map
+  AllocNextBalancesShard : () -> bool;
+  /// Append a new shard to allowances with the given capacity
+  AppendAllowancesShard : (cap: u32) -> null;
+  /// Append a new shard to balances with the given capacity
+  AppendBalancesShard : (cap: u32) -> null;
+  /// Burn tokens
   Burn : (from: actor_id, value: u256) -> bool;
+  /// Grant admin role
   GrantAdminRole : (to: actor_id) -> null;
+  /// Grant burner role
   GrantBurnerRole : (to: actor_id) -> null;
+  /// Grant minter role
   GrantMinterRole : (to: actor_id) -> null;
+  /// Mint new tokens
   Mint : (to: actor_id, value: u256) -> bool;
+  /// This method only works with the feature `stress-tests`.
+  /// It is necessary for quickly filling in the state in the test.
+  MintRange : (start: u64, count: u32, value: u256) -> u32;
+  /// Revoke admin role
   RevokeAdminRole : (from: actor_id) -> null;
+  /// Revoke burner role
   RevokeBurnerRole : (from: actor_id) -> null;
+  /// Revoke minter role
   RevokeMinterRole : (from: actor_id) -> null;
+  /// Sets allowance for `spender` from msg::source() (owner)
   Approve : (spender: actor_id, value: u256) -> bool;
+  /// Transfers `value` from msg::source() to `to`
   Transfer : (to: actor_id, value: u256) -> bool;
+  /// Transfers `value` from `from` to `to` on behalf of msg::source() (spender)
   TransferFrom : (from: actor_id, to: actor_id, value: u256) -> bool;
+  /// Returns current admins list (unordered)
   query Admins : () -> vec actor_id;
+  /// Returns current burners list (unordered)
   query Burners : () -> vec actor_id;
+  /// Returns current minters list (unordered)
   query Minters : () -> vec actor_id;
+  /// Returns current allowance
   query Allowance : (owner: actor_id, spender: actor_id) -> u256;
+  /// Allowances map stats: (len, allocated_capacity, max_capacity, free_space)
+  query AllowancesStats : () -> struct { u128, u128, u128, u128 };
+  /// Returns current balance
   query BalanceOf : (account: actor_id) -> u256;
+  /// Balances map stats: (len, allocated_capacity, max_capacity, free_space)
+  query BalancesStats : () -> struct { u128, u128, u128, u128 };
+  /// Token decimals
   query Decimals : () -> u8;
+  /// Token name
   query Name : () -> str;
+  /// Token symbol
   query Symbol : () -> str;
+  /// Total supply
   query TotalSupply : () -> u256;
 
   events {

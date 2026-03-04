@@ -9,10 +9,20 @@ gstd.workspace = true
 sails-rs.workspace = true
 parity-scale-codec.workspace = true
 scale-info.workspace = true
+awesome-sails-utils = { workspace = true, features = ["gprimitives"] }
 
 [dev-dependencies]
 env_logger.workspace = true
 
 [features]
 wasm-binary = []
+default = ["amount_80"]
+
+amount_80 = []
+amount_96 = []
+amount_128 = []
+amount_160 = []
+amount_192 = []
+amount_224 = []
+amount_256 = []
 
