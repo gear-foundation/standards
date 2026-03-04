@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 sails-rs.workspace = true
 gstd.workspace = true
-vft-service = { path = "../../vft-service",  default-features = false, features = ["amount_256"] }
+vft-service = { path = "../../vft-service",  default-features = false, features = ["amount_80"] }
 
 [features]
 default = []
