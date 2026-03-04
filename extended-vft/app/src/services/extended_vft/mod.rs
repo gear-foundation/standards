@@ -2,13 +2,13 @@
 
 use sails_rs::{
     collections::HashSet,
-    gstd::{msg, service},
+    gstd::{msg, service, services::Service},
     prelude::*,
 };
 
 mod funcs;
 use crate::services;
-use vft_service::{Service as VftService, Storage};
+use vft_service::{Service as VftService, ServiceExposure, Storage};
 
 /// Extra state for the extended token: role-based access control
 /// Stored separately from the base VFT storage
@@ -100,31 +100,35 @@ impl From<ExtendedService> for VftService {
 /// `extends = VftService` exposes base VFT exports on this service
 #[service(extends = VftService, events = Event)]
 impl ExtendedService {
+    fn vft(&self) -> ServiceExposure<VftService> {
+        VftService::new().expose(self.route())
+    }
+
     /// Append a new shard to balances with the given capacity
     #[export]
     pub fn append_balances_shard(&mut self, cap: u32) {
         self.ensure_is_admin();
-        services::utils::panicking(|| Storage::balances().try_append_shard(cap as usize));
+        self.vft().append_balances_shard(cap);
     }
     /// Append a new shard to allowances with the given capacity
     #[export]
     pub fn append_allowances_shard(&mut self, cap: u32) {
         self.ensure_is_admin();
-        services::utils::panicking(|| Storage::allowances().try_append_shard(cap as usize));
+        self.vft().append_allowances_shard(cap);
     }
 
     /// Explicitly grow balances map
     #[export]
     pub fn alloc_next_balances_shard(&mut self) -> bool {
         self.ensure_is_admin();
-        Storage::balances().alloc_next_shard()
+        self.vft().alloc_next_balances_shard()
     }
 
     /// Explicitly grow allowances map
     #[export]
     pub fn alloc_next_allowances_shard(&mut self) -> bool {
         self.ensure_is_admin();
-        Storage::allowances().alloc_next_shard()
+        self.vft().alloc_next_balances_shard()
     }
 
     /// Mint new tokens
@@ -226,6 +230,60 @@ impl ExtendedService {
     #[export]
     pub fn admins(&self) -> Vec<ActorId> {
         self.get().admins.clone().into_iter().collect()
+    }
+
+    /// This method only works with the feature `stress-tests`.
+    /// It is necessary for quickly filling in the state in the test.
+    #[export]
+    pub fn mint_range(&mut self, start: u64, count: u32, value: U256) -> u32 {
+        #[cfg(feature = "stress-tests")]
+        {
+            self.ensure_is_admin();
+
+            if count == 0 || value.is_zero() {
+                return 0;
+            }
+
+            let balances = Storage::balances();
+            let total_supply = Storage::total_supply();
+
+            let val_nz = vft_service::utils::helpers::nz_balance_from_u256(value)
+                .unwrap_or_else(|_| panic!("BadValue"));
+            let mut minted: u32 = 0;
+
+            for i in 0..count {
+                let user: ActorId = (start + i as u64).into();
+                let who = match vft_service::utils::helpers::nz_actor(user) {
+                    Ok(x) => x,
+                    Err(_) => break,
+                };
+
+                // ВАЖНО: unsafe — потому что мы предполагаем, что ключа ещё нет
+                let res = unsafe { balances.try_insert_new(who, val_nz) };
+                if res.is_err() {
+                    break; // CapacityOverflow и т.п.
+                }
+
+                minted += 1;
+            }
+
+            if minted > 0 {
+                let delta = value
+                    .checked_mul(U256::from(minted))
+                    .unwrap_or_else(|| panic!("NumericOverflow"));
+                *total_supply = total_supply
+                    .checked_add(delta)
+                    .unwrap_or_else(|| panic!("NumericOverflow"));
+            }
+
+            minted
+        }
+
+        #[cfg(not(feature = "stress-tests"))]
+        {
+            let _ = (start, count, value);
+            panic!("This method only works with `stress-tests` feature");
+        }
     }
 }
 

@@ -37,47 +37,40 @@ pub fn balances_get(balances: &BalancesMap, who: ActorId) -> Result<U256> {
 pub fn balances_set(balances: &mut BalancesMap, who: ActorId, new: U256) -> Result<()> {
     let who = nz_actor(who)?;
 
-    // Keeping storage compact: zero => no entry.
     if new.is_zero() {
         balances.remove(&who);
         return Ok(());
     }
 
-    // Validate that the ABI value fits into internal compact representation and is non-zero
     let new_nz = nz_balance_from_u256(new)?;
 
-    if balances.get(&who).is_none() {
-        balances.has_space_err().map_err(map_err)?;
+    if let Some((_idx, v_mut)) = balances.get_mut(&who) {
+        *v_mut = new_nz;
+        return Ok(());
     }
 
-    balances.try_insert(who, new_nz).map_err(map_err)?;
+    unsafe { balances.try_insert_new(who, new_nz) }.map_err(map_err)?;
     Ok(())
 }
 
 /// Add `delta` to balance and return the new balance (ABI `U256`)
 pub fn balances_add(balances: &mut BalancesMap, who: ActorId, delta: U256) -> Result<U256> {
-    // No-op: keep predictable behaviour and avoid touching state
     if delta.is_zero() {
         return balances_get(balances, who);
     }
 
-    let who_nz = nz_actor(who)?;
+    let who = nz_actor(who)?;
 
-    let old = balances
-        .get(&who_nz)
-        .map(|(_, v)| u256_from_nz_balance(v))
-        .unwrap_or(U256::zero());
-
-    let new = old.checked_add(delta).ok_or(Error::NumericOverflow)?;
-
-    if old.is_zero() && balances.get(&who_nz).is_none() {
-        balances.has_space_err().map_err(map_err)?;
+    if let Some((_idx, v_mut)) = balances.get_mut(&who) {
+        let old = u256_from_nz_balance(v_mut);
+        let new = old.checked_add(delta).ok_or(Error::NumericOverflow)?;
+        *v_mut = nz_balance_from_u256(new)?;
+        return Ok(new);
     }
 
-    let new_nz = nz_balance_from_u256(new)?;
-
-    balances.try_insert(who_nz, new_nz).map_err(map_err)?;
-    Ok(new)
+    let new_nz = nz_balance_from_u256(delta)?;
+    unsafe { balances.try_insert_new(who, new_nz) }.map_err(map_err)?;
+    Ok(delta)
 }
 
 /// Subtract `delta` from balance and return the new balance (ABI `U256`)
@@ -86,23 +79,21 @@ pub fn balances_sub(balances: &mut BalancesMap, who: ActorId, delta: U256) -> Re
         return balances_get(balances, who);
     }
 
-    let who_nz = nz_actor(who)?;
+    let who = nz_actor(who)?;
 
-    let old = balances
-        .get(&who_nz)
-        .map(|(_, v)| u256_from_nz_balance(v))
-        .unwrap_or(U256::zero());
+    let Some((_idx, v_mut)) = balances.get_mut(&who) else {
+        return Err(Error::InsufficientBalance);
+    };
 
+    let old = u256_from_nz_balance(v_mut);
     let new = old.checked_sub(delta).ok_or(Error::InsufficientBalance)?;
 
-    // Resulting zero => remove entry (keeps storage compact and invariant "no zero values stored").
     if new.is_zero() {
-        balances.remove(&who_nz);
+        balances.remove(&who);
         return Ok(U256::zero());
     }
 
-    let new_nz = nz_balance_from_u256(new)?;
-    balances.try_insert(who_nz, new_nz).map_err(map_err)?;
+    *v_mut = nz_balance_from_u256(new)?;
     Ok(new)
 }
 
@@ -139,10 +130,11 @@ pub fn allowances_set(
 
     let new_nz = nz_allowance_from_u256(new)?;
 
-    if allowances.get(&key).is_none() {
-        allowances.has_space_err().map_err(map_err)?;
+    if let Some((_idx, v_mut)) = allowances.get_mut(&key) {
+        *v_mut = new_nz;
+        return Ok(());
     }
 
-    allowances.try_insert(key, new_nz).map_err(map_err)?;
+    unsafe { allowances.try_insert_new(key, new_nz) }.map_err(map_err)?;
     Ok(())
 }

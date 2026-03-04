@@ -25,6 +25,7 @@ publish = false
 gstd = "=1.10.0"
 gclient = "=1.10.0"
 gear-core = "=1.10.0"
+gear-utils = "=1.10.0"
 sails-rs = "=0.10.2"
 log = "*"
 env_logger = "*"

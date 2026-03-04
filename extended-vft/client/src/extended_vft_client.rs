@@ -98,6 +98,14 @@ pub mod vft {
             to: ActorId,
             value: U256,
         ) -> sails_rs::client::PendingCall<io::Mint, Self::Env>;
+        /// This method only works with the feature `stress-tests`.
+        /// It is necessary for quickly filling in the state in the test.
+        fn mint_range(
+            &mut self,
+            start: u64,
+            count: u32,
+            value: U256,
+        ) -> sails_rs::client::PendingCall<io::MintRange, Self::Env>;
         /// Revoke admin role
         fn revoke_admin_role(
             &mut self,
@@ -220,6 +228,14 @@ pub mod vft {
         ) -> sails_rs::client::PendingCall<io::Mint, Self::Env> {
             self.pending_call((to, value))
         }
+        fn mint_range(
+            &mut self,
+            start: u64,
+            count: u32,
+            value: U256,
+        ) -> sails_rs::client::PendingCall<io::MintRange, Self::Env> {
+            self.pending_call((start, count, value))
+        }
         fn revoke_admin_role(
             &mut self,
             from: ActorId,
@@ -315,6 +331,7 @@ pub mod vft {
         sails_rs::io_struct_impl!(GrantBurnerRole (to: ActorId) -> ());
         sails_rs::io_struct_impl!(GrantMinterRole (to: ActorId) -> ());
         sails_rs::io_struct_impl!(Mint (to: ActorId, value: U256) -> bool);
+        sails_rs::io_struct_impl!(MintRange (start: u64, count: u32, value: U256) -> u32);
         sails_rs::io_struct_impl!(RevokeAdminRole (from: ActorId) -> ());
         sails_rs::io_struct_impl!(RevokeBurnerRole (from: ActorId) -> ());
         sails_rs::io_struct_impl!(RevokeMinterRole (from: ActorId) -> ());

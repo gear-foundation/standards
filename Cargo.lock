@@ -530,12 +530,12 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 [[package]]
 name = "awesome-sails-storage"
 version = "0.2.0"
-source = "git+https://github.com/gear-tech/awesome-sails#2134802406ae622b50fb071c18077496cd79e404"
+source = "git+https://github.com/gear-tech/awesome-sails#1ec79913e969b75d016c63c4d78d8eb913eb13b9"
 
 [[package]]
 name = "awesome-sails-utils"
 version = "0.2.0"
-source = "git+https://github.com/gear-tech/awesome-sails#2134802406ae622b50fb071c18077496cd79e404"
+source = "git+https://github.com/gear-tech/awesome-sails#1ec79913e969b75d016c63c4d78d8eb913eb13b9"
 dependencies = [
  "awesome-sails-storage",
  "bnum",
@@ -1951,6 +1951,7 @@ dependencies = [
  "extended-vft-client",
  "gclient",
  "gear-core",
+ "gear-utils",
  "sails-rs",
  "tokio",
 ]
@@ -2016,7 +2017,7 @@ version = "0.1.0"
 dependencies = [
  "gstd",
  "sails-rs",
- "vnft-service 1.1.0 (git+https://github.com/gear-foundation/standards/)",
+ "vnft-service",
 ]
 
 [[package]]
@@ -7886,17 +7887,6 @@ name = "vnft-service"
 version = "1.1.0"
 dependencies = [
  "env_logger",
- "gstd",
- "parity-scale-codec",
- "sails-rs",
- "scale-info",
-]
-
-[[package]]
-name = "vnft-service"
-version = "1.1.0"
-source = "git+https://github.com/gear-foundation/standards/#ac8dfdc41ba557669d98651267ab5cf53b46c0ee"
-dependencies = [
  "gstd",
  "parity-scale-codec",
  "sails-rs",

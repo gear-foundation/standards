@@ -139,6 +139,18 @@ impl Service {
 
 #[service(events = Event)]
 impl Service {
+    /// Append a new shard to balances with the given capacity
+    #[export]
+    pub fn append_balances_shard(&mut self, cap: u32) {
+        panicking(|| Storage::balances().try_append_shard(cap as usize));
+    }
+
+    /// Append a new shard to allowances with the given capacity
+    #[export]
+    pub fn append_allowances_shard(&mut self, cap: u32) {
+        panicking(|| Storage::allowances().try_append_shard(cap as usize));
+    }
+
     /// Allocates the next shard for balances map
     #[export]
     pub fn alloc_next_balances_shard(&mut self) -> bool {

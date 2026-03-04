@@ -21,6 +21,9 @@ service Vft {
   GrantMinterRole : (to: actor_id) -> null;
   /// Mint new tokens
   Mint : (to: actor_id, value: u256) -> bool;
+  /// This method only works with the feature `stress-tests`.
+  /// It is necessary for quickly filling in the state in the test.
+  MintRange : (start: u64, count: u32, value: u256) -> u32;
   /// Revoke admin role
   RevokeAdminRole : (from: actor_id) -> null;
   /// Revoke burner role
